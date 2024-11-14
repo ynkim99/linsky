@@ -5,5 +5,5 @@ public class Notification {
 	String userId;
 	String notiType;
 	String targetUrl;
-	// content clob 타입이라 추후 결정되면 변경할 것
+	String content;
 }

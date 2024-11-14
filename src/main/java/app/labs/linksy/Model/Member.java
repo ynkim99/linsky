@@ -7,5 +7,5 @@ public class Member {
 	String userPwd;
 	String userEmail;
 	String userImg;
-	// userInstroduce 값 정해야함 clob으로 저장됨
+	String userInstroduce;
 }
