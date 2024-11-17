@@ -1,32 +1,205 @@
 @charset "UTF-8";
+/* 메인바랑 합친 css라 이것 하나만 임포트 함*/
+/* 폰트 설정 */
+@font-face {
+    font-family: 'SBAggroB';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 
 html, body {
-	margin:0; padding:0;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+    display: inline-flex;
 }
+
+/* 페이지 설정 */
 .page {
-	position:relative;
-	overflow: hidden;
+    position: relative;
+    overflow: hidden;
 }
-.right-bar {
-	margin-left:300px; 
-	padding-top:150px;
-	text-align: center;
+
+/* 메뉴 바 */
+.menu_bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    background: #e0e0e0;
+    display: block;
+    border-right: solid thin #d9d9d9;
+    overflow: hidden;
 }
+
+.menu_bar::-webkit-scrollbar {
+    display: none;
+}
+
+.menubar_header {
+    height: 30px;
+}
+
+/* 로고 이미지 */
+.logo_img {
+    height: 150px;
+    width: 100%;
+    align-content: space-between;
+}
+
+.logo_img img {
+    height: 100%;
+    width: 100%;
+}
+
+/* 메뉴 항목 */
+.menu_content_container {
+    display: flex;
+    align-items: center;
+    margin-left: 40px;
+    margin-bottom: 10px;
+}
+
+.menu_content_container a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.menu_icon_img {
+    float: left;
+    height: 50px;
+    width: 50px;
+}
+
+.menu_icon_img i {
+    font-size: 4vmin;
+}
+
+.menu_content {
+    float: left;
+    text-align: center;
+    margin-top: 12px;
+    margin-left: 7px;
+    font-family: 'SBAggroB';
+    font-size: x-large;
+}
+
+/* 상단 헤더 */
 .header {
-	position:fixed; 
-	left:300px; 
-	top:0px; 
-	right:0px; 
-	height:150px; 
-	border:2px solid blue; 
-	background:#eeeeee;
+    position: fixed;
+    left: 300px;
+    top: 0;
+    right: 0;
+    height: 70px;
+    background: #eeeeee;
+    display: flex;
+    align-items: center;
+    padding: 0px;
 }
-.content { 
-	position: fixed;
-	left: 300px;
-	right: 0px;
-	bottom: 0px;
-	top: 150px;
-	height: auto;
-	border:2px solid red;
+
+/* 검색 바 */
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-bar {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+/* 메인 콘텐츠 */
+.content {
+    position: fixed;
+    left: 300px;
+    right: 0;
+    bottom: 0;
+    top: 70px;
+    overflow-y: auto;
+    padding: 0px;
+}
+
+/* 탭 */
+.tabs {
+    display: flex;
+    justify-content: center;
+    background: #f1f1f1;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.tab-button.active {
+    border-bottom: 2px solid #007bff;
+}
+
+.tab-content {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: center;
+    height: auto;
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* 그리드 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 20px;
+    width: 100%;
+    max-width: 700px;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-item {
+    background: #c4c4c4;
+    width: 150px;
+    height: 150px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
