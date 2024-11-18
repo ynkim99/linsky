@@ -9,5 +9,4 @@ public class LinksyApplication {
     public static void main(String[] args) {
         SpringApplication.run(LinksyApplication.class, args);
     }
-
 }

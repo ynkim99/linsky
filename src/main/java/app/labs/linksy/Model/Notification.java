@@ -6,4 +6,6 @@ public class Notification {
 	String notiType;
 	String targetUrl;
 	String content;
+	
+	
 }

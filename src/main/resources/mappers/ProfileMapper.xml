@@ -1,0 +1,25 @@
+<mapper namespace="app.labs.linksy.mapper.ProfileMapper">
+
+    <!-- ID로 멤버 정보 가져오기 -->
+    <select id="getMemberById" resultType="app.labs.linksy.Model.Member">
+        SELECT user_nickname, user_email, profile_image
+        FROM member
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 프로필 업데이트 -->
+    <update id="updateMemberProfile">
+        UPDATE member
+        SET user_nickname = #{userNickname},
+            user_email = #{userEmail}
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- 프로필 이미지 업데이트 -->
+    <update id="updateMemberImage">
+        UPDATE member
+        SET profile_image = #{userImg}
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>
