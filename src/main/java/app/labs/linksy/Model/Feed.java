@@ -3,7 +3,7 @@ package app.labs.linksy.Model;
 import java.sql.Timestamp;
 
 public class Feed {
-	int feeId;
+	int feedId;
 	String userId;
 	String feedContent;
 	Timestamp feedTime;

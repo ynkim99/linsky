@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- css 가저오는 곳 -->
 	<!-- 메뉴바랑 css 합쳐서 하나만 가져옴 -->
-    <link rel="stylesheet" href="/LinksyProject/src/main/resources/static/css/searchbar.css">
+    <link rel="stylesheet" href="/css/searchbar.css">
 </head>
 <body>
     <div class="page">
@@ -17,7 +17,7 @@
         <div class="menu_bar">
             <div class="menubar_header"></div>
             <div class="logo_img">
-                <img alt="Logo" src="/LinksyProject/src/main/resources/static/images/logo/blacklogo.png">
+                <img alt="Logo" src="images/logo/blacklogo.png">
             </div>
             <div class="margin_logo2menu"></div>
             <div class="menu_content_container_list">
@@ -85,8 +85,10 @@
         <div class="search_page">
             <div class="header">
                 <div class="search-container">
-                    <input type="text" class="search-bar" placeholder="Search...">
-                    <button class="search-button">Search</button>
+                	<form action="/search" method="get" class="search-form">
+                    	<input type="text" class="search-bar" placeholder="Search..." value="${keyword}">
+                    	<button class="search-button">Search</button>
+                	</form>
                 </div>
             </div>
             <div class="content">
@@ -101,29 +103,36 @@
                 <div class="tab-content">
                     <div id="account" class="tab-panel active">
                         <h2>Account Content</h2>
-                        <p>This is the account section.</p>
+                        <ul>
+		                    <li th:each="member : ${members}">
+		                        <img th:src="${member.user_img}" alt="Profile" width="50" height="50">
+		                        <span th:text="${member.user_name}"></span>
+		                        <!--  <span th:text="${member.user_nickname}"></span>-->
+		                        <p th:text="${member.user_introduce}"></p>
+		                    </li>
+		                </ul>
                     </div>
                     <div id="hashtag" class="tab-panel">
                         <h2>Hashtag Content</h2>
 						<div class="grid">
-                            <div class="grid-item"></div>
-                            <div class="grid-item"></div>
-                            <div class="grid-item"></div>
-                            <div class="grid-item"></div>
-                            <div class="grid-item"></div>
-                            <div class="grid-item"></div>
+                            <div class="grid-item" th:each="feed : ${hashtagFeeds}">
+					            <img th:each="image : ${feed.images}" th:src="${image.img_name}" alt="Feed Image">
+					            <p th:text="${feed.feed_content}">Feed Content</p>
+					            <span th:text="${feed.feed_time}">Feed Time</span>
+					            <span th:text="'Likes: ' + ${feed.like_amount}">Likes</span>
+					        </div>
                         </div>
                     </div>
                     <div id="feed" class="tab-panel">
                         <h2>Feed Content</h2>
                         <div class="grid">
-                            <div class="grid-item"></div>
-                            <div class="grid-item"></div>
-                            <div class="grid-item"></div>
-                            <div class="grid-item"></div>
-                            <div class="grid-item"></div>
-                            <div class="grid-item"></div>
-                        </div>
+                            <div class="grid-item" th:each="feed : ${feeds}">
+		                        <img th:each="image : ${feed.images}" th:src="${image.img_name}" alt="Feed Image">
+		                        <p th:text="${feed.feed_content}">Feed Content</p>
+		                        <span th:text="${feed.feed_time}">Feed Time</span>
+		                        <span th:text="'Likes: ' + ${feed.like_amount}">Likes</span>
+		                    </div>                        
+						</div>
                     </div>
                 </div>
             </div>

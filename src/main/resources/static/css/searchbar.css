@@ -104,15 +104,23 @@ html, body {
 .search-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
     width: 100%;
+    gap: 10px;
     max-width: 600px;
     margin: 0 auto;
+}
+
+.search-form{
+	align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 .search-bar {
     flex-grow: 1;
     padding: 8px;
+    width: 80%;
     border: 1px solid #ccc;
     border-radius: 4px;
 }

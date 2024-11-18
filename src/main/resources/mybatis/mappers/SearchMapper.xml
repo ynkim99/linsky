@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="app.labs.linksy.DAO.SearchRepository">
+
+    <!-- 사용자 검색 -->
+    <select id="searchMembers" parameterType="string" resultType="app.labs.linksy.Model.Member">
+        SELECT user_id AS userId, 
+            user_name AS userName, 
+            user_nickname AS userNickname, 
+            user_email AS userEmail, 
+            user_img AS userImg, 
+            user_introduce AS userIntroduce
+        FROM Member
+        WHERE LOWER(user_name) LIKE '%' || #{keyword} || '%'
+           OR LOWER(user_nickname) LIKE '%' || #{keyword} || '%';
+    </select>
+
+    <!-- 피드 검색 -->
+    <select id="searchFeeds" parameterType="string" resultType="list">
+        SELECT f.feed_id AS feedId, 
+            f.user_id AS userId, 
+            f.feed_content AS feedContent, 
+            f.feed_time AS feedTime, 
+            f.like_amount AS likeAmount, 
+            m.user_nickname AS userNickname
+        FROM Feed f
+        JOIN Member m ON f.user_id = m.user_id
+        WHERE LOWER(f.feed_content) LIKE '%' || #{keyword} || '%';
+    </select>
+    
+    <!-- 피드와 이미지를 함께 검색 -->
+    <select id="searchFeedsWithImages" parameterType="string" resultType="map">
+        SELECT f.feed_id AS feedId, 
+            f.user_id AS userId, 
+            f.feed_content AS feedContent, 
+            f.feed_time AS feedTime, 
+            f.like_amount AS likeAmount, 
+            m.user_nickname AS userNickname,
+            fi.img_name AS imageName
+        FROM Feed f
+        JOIN Member m ON f.user_id = m.user_id
+        LEFT JOIN Feed_Image fi ON f.feed_id = fi.feed_id
+        WHERE LOWER(f.feed_content) LIKE '%' || #{keyword} || '%';
+    </select>
+
+    <!-- 해시태그 검색 -->
+    <select id="findFeedsByHashtag" parameterType="string" resultMap="string">
+	    SELECT f.feed_id AS feedId, 
+            f.user_id AS userId, 
+            f.feed_content AS feedContent, 
+            f.feed_time AS feedTime, 
+            f.like_amount AS likeAmount,
+            fi.image_id AS imageId, 
+            fi.img_name AS imageName
+	    FROM Feed f
+	    LEFT JOIN Feed_Image fi ON f.feed_id = fi.feed_id
+	    INNER JOIN Feed_Hashtag fh ON f.feed_id = fh.feed_id
+	    INNER JOIN Hashtag h ON fh.hashtag_id = h.hashtag_id
+	    WHERE h.hashtag LIKE CONCAT('%', #{keyword}, '%')
+	</select>
+
+    <!-- 통합 검색 (사용자 + 피드 + 해시태그) -->
+    <select id="searchAll" parameterType="string" resultType="map">
+        SELECT 'Member' AS type, user_id AS id, user_name AS title, user_nickname AS subtitle, user_img AS image
+        FROM Member
+        WHERE LOWER(user_name) LIKE '%' || #{keyword} || '%'
+           OR LOWER(user_nickname) LIKE '%' || #{keyword} || '%'
+        UNION ALL
+        SELECT 'Feed' AS type, CAST(feed_id AS VARCHAR2(20)) AS id, NULL AS title, feed_content AS subtitle, NULL AS image
+        FROM Feed
+        WHERE LOWER(feed_content) LIKE '%' || #{keyword} || '%'
+        UNION ALL
+        SELECT 'Hashtag' AS type, CAST(hashtag_id AS VARCHAR2(20)) AS id, hashtag AS title, NULL AS subtitle, NULL AS image
+        FROM Hashtag
+        WHERE LOWER(hashtag) LIKE '%' || #{keyword} || '%';
+    </select>
+
+</mapper>
