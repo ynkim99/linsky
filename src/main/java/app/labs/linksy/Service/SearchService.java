@@ -22,22 +22,15 @@ public class SearchService {
     }
 
     public List<Member> searchMembers(String keyword) {
-        return searchrepo.searchMembers(keyword.toLowerCase());
+        return searchrepo.searchMembers(keyword);
     }
 
-    public List<Feed> searchFeeds(String keyword) {
-        return searchrepo.searchFeeds(keyword.toLowerCase());
-    }
-    
-    public List<Feed> searchFeedsWithImages(String keyword) {
+    public List<Feed> searchFeedsByKeyword(String keyword) {
         return searchrepo.findFeedsByKeyword(keyword);
     }
 
     public List<Feed> searchFeedsByHashtag(String keyword) {
-        return searchrepo.findFeedsByHashtag(keyword); 
+        return searchrepo.findFeedsByHashtag(keyword);
     }
 
-    public List<Map<String, Object>> searchAll(String keyword) {
-        return searchrepo.searchAll(keyword.toLowerCase());
-    }
 }

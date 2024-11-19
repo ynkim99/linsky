@@ -17,7 +17,7 @@
         <div class="menu_bar">
             <div class="menubar_header"></div>
             <div class="logo_img">
-                <img alt="Logo" src="images/logo/blacklogo.png">
+                <img alt="Logo" src="/images/logo/blacklogo.png">
             </div>
             <div class="margin_logo2menu"></div>
             <div class="menu_content_container_list">
@@ -85,54 +85,64 @@
         <div class="search_page">
             <div class="header">
                 <div class="search-container">
-                	<form action="/search" method="get" class="search-form">
-                    	<input type="text" class="search-bar" placeholder="Search..." value="${keyword}">
-                    	<button class="search-button">Search</button>
-                	</form>
+                    <form id="searchForm" class="search-form">
+                        <input type="text" class="search-bar" name="keyword" placeholder="Search..." th:value="${keyword}">
+                        <button class="search-button" type="button" onclick="submitSearch()">Search</button>
+                    </form>
                 </div>
             </div>
             <div class="content">
                 <!-- 선택 탭 -->
                 <div class="tabs">
-                    <button class="tab-button active" onclick="showTab('account')">Account</button>
-                    <button class="tab-button" onclick="showTab('hashtag')">Hashtag</button>
-                    <button class="tab-button" onclick="showTab('feed')">Feed</button>
+                    <button class="tab-button" th:classappend="${activeTab == 'account'} ? 'active'" 
+                            onclick="changeTab('/search/accounts')">Account</button>
+                    <button class="tab-button" th:classappend="${activeTab == 'hashtag'} ? 'active'" 
+                            onclick="changeTab('/search/hashtag')">Hashtag</button>
+                    <button class="tab-button" th:classappend="${activeTab == 'feed'} ? 'active'" 
+                            onclick="changeTab('/search/feed')">Feed</button>
                 </div>
 
                 <!-- 탭 내용물 -->
                 <div class="tab-content">
-                    <div id="account" class="tab-panel active">
+                    <!-- Account 탭 -->
+                    <div id="account" class="tab-panel" th:classappend="${activeTab == 'account'} ? 'active'">
                         <h2>Account Content</h2>
-                        <ul>
-		                    <li th:each="member : ${members}">
-		                        <img th:src="${member.user_img}" alt="Profile" width="50" height="50">
-		                        <span th:text="${member.user_name}"></span>
-		                        <!--  <span th:text="${member.user_nickname}"></span>-->
-		                        <p th:text="${member.user_introduce}"></p>
-		                    </li>
-		                </ul>
+                        <ul th:if="${members != null}">
+                            <li th:each="member : ${members}">
+                                <img th:src="${member.userImg}" alt="Profile" width="50" height="50">
+                                <span th:text="${member.userName}"></span>
+                                <p th:text="${member.userIntroduce}"></p>
+                            </li>
+                        </ul>
+                        <p th:if="${members != null and members.empty}">검색된 계정이 없습니다.</p>
                     </div>
-                    <div id="hashtag" class="tab-panel">
+
+                    <!-- Hashtag 탭 -->
+                    <div id="hashtag" class="tab-panel" th:classappend="${activeTab == 'hashtag'} ? 'active'">
                         <h2>Hashtag Content</h2>
-						<div class="grid">
+                        <div class="grid" th:if="${hashtagFeeds != null}">
                             <div class="grid-item" th:each="feed : ${hashtagFeeds}">
-					            <img th:each="image : ${feed.images}" th:src="${image.img_name}" alt="Feed Image">
-					            <p th:text="${feed.feed_content}">Feed Content</p>
-					            <span th:text="${feed.feed_time}">Feed Time</span>
-					            <span th:text="'Likes: ' + ${feed.like_amount}">Likes</span>
-					        </div>
+                                <img th:each="image : ${feed.images}" th:src="${image.imgName}" alt="Feed Image">
+                                <p th:text="${feed.feedContent}">Feed Content</p>
+                                <span th:text="${feed.feedTime}">Feed Time</span>
+                                <span th:text="'Likes: ' + ${feed.likeAmount}">Likes</span>
+                            </div>
                         </div>
+                        <p th:if="${hashtagFeeds != null and hashtagFeeds.empty}">검색된 해시태그가 없습니다.</p>
                     </div>
-                    <div id="feed" class="tab-panel">
+
+                    <!-- Feed 탭 -->
+                    <div id="feed" class="tab-panel" th:classappend="${activeTab == 'feed'} ? 'active'">
                         <h2>Feed Content</h2>
-                        <div class="grid">
+                        <div class="grid" th:if="${feeds != null}">
                             <div class="grid-item" th:each="feed : ${feeds}">
-		                        <img th:each="image : ${feed.images}" th:src="${image.img_name}" alt="Feed Image">
-		                        <p th:text="${feed.feed_content}">Feed Content</p>
-		                        <span th:text="${feed.feed_time}">Feed Time</span>
-		                        <span th:text="'Likes: ' + ${feed.like_amount}">Likes</span>
-		                    </div>                        
-						</div>
+                                <img th:each="image : ${feed.images}" th:src="${image.imgName}" alt="Feed Image">
+                                <p th:text="${feed.feedContent}">Feed Content</p>
+                                <span th:text="${feed.feedTime}">Feed Time</span>
+                                <span th:text="'Likes: ' + ${feed.likeAmount}">Likes</span>
+                            </div>
+                        </div>
+                        <p th:if="${feeds != null and feeds.empty}">검색된 게시글이 없습니다.</p>
                     </div>
                 </div>
             </div>
@@ -141,20 +151,38 @@
 
 </body>
 <script>
-// 탭 선택 js
-function showTab(tabId) {
-    // 모든 탭 버튼 비활성화
-    const tabButtons = document.querySelectorAll('.tab-button');
-    tabButtons.forEach(button => button.classList.remove('active'));
+function submitSearch() {
+    const keyword = document.querySelector('.search-bar').value;
+    const activeTab = document.querySelector('.tab-button.active');
+    let url = '/search/accounts'; // 기본값
 
-    // 모든 탭 패널 숨김
-    const tabPanels = document.querySelectorAll('.tab-panel');
-    tabPanels.forEach(panel => panel.classList.remove('active'));
+    if (activeTab) {
+        if (activeTab.textContent === 'Hashtag') {
+            url = '/search/hashtag';
+        } else if (activeTab.textContent === 'Feed') {
+            url = '/search/feed';
+        }
+    }
 
-    // 선택된 탭 버튼과 패널 활성화
-    document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
-    document.getElementById(tabId).classList.add('active');
+    window.location.href = `${url}?keyword=${encodeURIComponent(keyword)}`;
 }
+
+function changeTab(url) {
+    const keyword = document.querySelector('.search-bar').value;
+    if (keyword) {
+        window.location.href = `${url}?keyword=${encodeURIComponent(keyword)}`;
+    } else {
+        window.location.href = url;
+    }
+}
+
+// 엔터키 처리
+document.querySelector('.search-bar').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        submitSearch();
+    }
+});
 </script>
 
 </html>

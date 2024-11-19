@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <title>Search Feed Popup</title>
+    </head>
+    <body>
+        <div class="search-feed-popup">
+            <div class="popup-container">
+                <!-- 왼쪽 이미지 섹션 -->
+                <div class="feed-image-section">
+                    <img th:src="${feed.imgUrl}" alt="Feed Image" class="feed-image">
+                </div>
+                
+                <!-- 오른쪽 콘텐츠 섹션 -->
+                <div class="feed-content-section">
+                    <!-- 작성자 정보 -->
+                    <div class="author-info">
+                        <img th:src="${feed.userImg}" alt="Profile" class="profile-image">
+                        <div class="author-details">
+                            <span class="author-name" th:text="${feed.userName}"></span>
+                            <span class="post-time" th:text="${feed.feedTime}"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- 피드 내용 -->
+                    <div class="feed-content">
+                        <p th:utext="${@feedService.formatHashtags(feed.content)}"></p>
+                    </div>
+                    
+                    <!-- 댓글 섹션 -->
+                    <div class="comments-section" id="commentsContainer">
+                        <div class="comment" th:each="comment : ${feed.comments}">
+                            <img th:src="${comment.userImg}" alt="Comment" class="comment-image">
+                            <div class="comment-content">
+                                <span class="comment-name" th:text="${comment.userName}"></span>
+                                <p th:text="${comment.content}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

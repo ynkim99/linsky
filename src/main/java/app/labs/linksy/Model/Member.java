@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Getter @Setter @ToString
-@Builder
 public class Member {
 	String userId;
 	String userName;
