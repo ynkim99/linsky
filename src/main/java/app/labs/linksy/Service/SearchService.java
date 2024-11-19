@@ -33,4 +33,11 @@ public class SearchService {
         return searchrepo.findFeedsByHashtag(keyword);
     }
 
+    public Feed getFeedById(int feedId) {
+        return searchrepo.getFeedById(feedId);
+    }
+
+    public String getContentByFeedId(int feedId) {
+        return searchrepo.getContentByFeedId(feedId);
+    }
 }

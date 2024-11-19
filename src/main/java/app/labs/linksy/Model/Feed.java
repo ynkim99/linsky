@@ -16,4 +16,5 @@ public class Feed {
 	int likeAmount;
 	Member member;
 	List<FeedImage> images;
+	List<Comment> comments;
 }

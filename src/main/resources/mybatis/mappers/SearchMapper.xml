@@ -61,4 +61,44 @@
             <result property="imgName" column="img_name"/>
         </collection>
     </resultMap>
+
+    <select id="getFeedById" resultMap="feedWithImagesMap">
+        SELECT f.feed_id, f.user_id, f.feed_content, f.feed_time, f.like_amount,
+               m.user_name, m.user_img,
+               fi.img_name
+        FROM Feed f
+        JOIN Member m ON f.user_id = m.user_id
+        LEFT JOIN Feed_Image fi ON f.feed_id = fi.feed_id
+        WHERE f.feed_id = #{feedId}
+    </select>
+
+    <resultMap id="feedWithCommentsMap" type="app.labs.linksy.Model.Feed">
+        <id property="feedId" column="feed_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="feedContent" column="feed_content"/>
+        <result property="feedTime" column="feed_time"/>
+        <result property="likeAmount" column="like_amount"/>
+        <collection property="comments" javaType="java.util.List" ofType="app.labs.linksy.Model.Comment">
+            <id property="commentId" column="comment_id"/>
+            <result property="userId" column="user_id"/>
+            <result property="commentContent" column="comment_content"/>
+            <result property="parentId" column="parent_id"/>
+            <result property="commentTime" column="comment_time"/>
+        </collection>
+    </resultMap>
+
+    <select id="getFeedByIdWithComments" resultMap="feedWithCommentsMap">
+        SELECT f.feed_id, f.user_id, f.feed_content, f.feed_time, f.like_amount,
+               c.comment_id, c.user_id AS comment_user_id, c.comment_content, c.parent_id, c.comment_time,
+               m.user_name, m.user_img
+        FROM Feed f
+        LEFT JOIN Comment c ON f.feed_id = c.feed_id
+        JOIN Member m ON c.user_id = m.user_id
+        WHERE f.feed_id = #{feedId}
+    </select>
+    <select id="getContentByFeedId">
+        SELECT feed_content
+        FROM Feed
+        WHERE feed_id = #{feedId}
+    </select>
 </mapper>
