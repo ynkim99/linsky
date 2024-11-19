@@ -1,0 +1,330 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'goorm-sans-bold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408@1.0/goorm-sans-bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'MaruBuri';
+    src: url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Regular.eot);
+    src: url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Regular.eot?#iefix) format("embedded-opentype"), url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Regular.woff2) format("woff2"), url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Regular.woff) format("woff"), url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Regular.ttf) format("truetype");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+html, body {
+    height: 100%;
+    /* margin: 0; */
+}
+
+.main {
+    /* border: 1px solid black; */
+    width: 100%; height: 100%;
+    display: flex;
+}
+
+.main .left {
+    /* border: 1px solid blue; */
+    width: 300px; height: 100%;
+}
+
+.main .right {
+    /* background-color: aqua; */
+    width: 300px; height: 100%;
+}
+
+/* 전체 화면 중앙 컨테이너 */
+section.center {
+    position: relative;
+    flex-grow: 1;
+    height: 100vh; /* 전체 화면 높이 */
+    overflow-y: auto; /* 수직 스크롤 */
+    display: flex;
+    justify-content: center; /* 가로 정렬 */
+    align-items: center; /* 세로 정렬 */
+}
+
+/* 스크롤바의 너비를 줄입니다 */
+section.center::-webkit-scrollbar {
+    width: 2px; /* 세로 스크롤바 크기 */
+    height: 0px; /* 가로 스크롤바 크기 (필요한 경우) */
+}
+
+/* 스크롤바의 배경 색상 */
+section.center::-webkit-scrollbar-track {
+    background: #f1f1f1; /* 스크롤바 배경 */
+}
+
+/* 스크롤바의 thumb 부분(실제 드래그 가능한 부분) */
+section.center::-webkit-scrollbar-thumb {
+    background: #888; /* 스크롤 thumb 색상 */
+    border-radius: 10px; /* thumb 모서리 둥글게 */
+}
+
+/* 스크롤 thumb 부분을 호버했을 때 색상 변경 */
+section.center::-webkit-scrollbar-thumb:hover {
+    background: #555; /* hover 시 색상 */
+}
+
+/* 모든 게시글을 감싸는 컨테이너 */
+.feeds-container {
+    position: relative;
+    width: 600px;
+    height: 100%; /* 화면 높이를 채움 */
+    overflow: visible; /* 넘치는 요소 숨김 */
+}
+
+.feed {
+    /*border: 1px solid #dbdbdb;*/
+    position: absolute;
+    margin-bottom: 20px; 
+    width: 100%;
+    height: 100vh;
+    opacity: 1; /* 요소가 보이도록 설정 */
+    display: block;
+}
+
+.feed-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.username, .likes {
+    font-family: 'goorm-sans-bold';
+    font-weight: 700;
+    
+}
+
+.feed-image img {
+    width: 100%;
+    height: auto;
+}
+
+/* 좋아요 및 댓글 창*/
+
+.feed-footer {
+    padding: 10px;
+}
+
+.feed-actions-likes {
+    display: flex;
+    align-items: center; 
+    gap: 10px; 
+}
+
+.feed-caption {
+    padding-bottom: 15px;
+}
+
+.feed-caption .caption-text {
+    font-family: 'MaruBuri';
+}
+
+.feed-caption .username {
+    font-weight: bold;
+}
+
+/* 글 더보기 */
+.read-more {
+    cursor: pointer;
+    font-family: 'MaruBuri';
+    font-weight: 500;
+    opacity: 0.5;
+    
+}
+
+.read-more.hidden {
+    display: none;
+}
+
+/* 댓글 모두 보기 */
+
+.view-comments {
+    cursor: pointer;
+}
+
+.comment-item {
+    margin-bottom: 10px;
+}
+
+.comment-item strong {
+    font-family: 'goorm-sans-bold';
+    font-weight: 700;
+}
+
+.comment-item span {
+    font-family: 'MaruBuri';
+    font-weight: 500;
+    margin-left: 5px;
+}
+
+.comments-list {
+    margin-top: 10px;
+    display: none; /* 기본적으로 숨김 */
+    max-height: 200px; /* 댓글 영역의 최대 높이 */
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    padding: 5px; /* 댓글과 테두리 간격 */
+    border-top: 1px solid #dbdbdb;
+}
+
+/* 댓글이 확장된 후 상태 */
+.comments-list.show {
+    display: block; /* 댓글 리스트 확장 시 */
+}
+
+/* 스크롤바 숨기기 */
+.comments-list::-webkit-scrollbar {
+    width: 2px; /* 세로 스크롤바 숨기기 */
+    height: 0px; /* 가로 스크롤바 숨기기 (필요시) */
+}
+
+/* 스크롤바의 핸들(슬라이더) 스타일 */
+.comments-list::-webkit-scrollbar-thumb {
+    background-color: #888;  /* 스크롤바 색상 */
+    border-radius: 10px;     /* 둥글게 처리 */
+}
+
+/* 스크롤바 트랙(배경) 스타일 */
+.comments-list::-webkit-scrollbar-track {
+    background: #f1f1f1; /* 트랙 배경 색상 */
+    border-radius: 10px;  /* 둥글게 처리 */
+}
+
+/* 댓글 달기 */
+.comment-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-top: 1px solid #dbdbdb;
+    margin-top: 5px;
+    position: relative;
+    bottom: 0; /* 항상 하단에 고정되도록 설정 */
+    width: 100%;
+}
+
+.comment-input input {
+    flex-grow: 1;
+    border: none;
+    border-bottom: 1px solid #dbdbdb;
+    padding: 5px 15px;
+    outline: none;
+    font-family: 'MaruBuri';
+    font-weight: 500;
+}
+
+.comment-input input::placeholder {
+    font-family: 'MaruBuri';
+    font-weight: 500;
+    opacity: 0.5;
+}
+
+.comment-input button {
+    background-color: white;
+    color: #0095f6;
+    border: none;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+.comments-view {
+    position: relative;
+}
+
+.comments-view .comment-input {
+    position: absolute;
+    bottom: 0; /* 댓글 입력창을 댓글 리스트 아래에 고정 */
+    width: 100%;
+}
+
+/* 나의 프로필 */
+.my-profile {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* 원형 이미지 */
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* 본인 계정 정보 스타일 */
+
+section.right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 왼쪽 정렬 */
+    margin-top: 30px; /* 상단 여백 */
+    padding-left: 0; /* 좌측 여백 */
+}
+
+.friend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* 왼쪽 정렬 */
+    margin-bottom: 15px;
+    padding: 0; /* 내부 여백 제거 */
+}
+
+
+/* 프로필 이미지 기본 스타일 */
+.friend .profile-img {
+    margin-right: 10px; /* 텍스트와의 간격 */
+}
+
+/* 유저 정보 텍스트 스타일 */
+.friend .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 텍스트 왼쪽 정렬 */
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 10px 0;
+}
+
+.friends-title {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start; /* 왼쪽 정렬 */
+	width: 100%; /* 부모 영역에 맞게 크기 설정 */
+	margin-top: 15px; /* 아래 간격 */
+}
+
+.friends-title span {
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 5px; /* 텍스트와 선 사이 간격 */
+	font-family: 'goorm-sans-bold';
+}
+
+.friends-title hr {
+	width: 100%; /* 선이 섹션 너비를 가득 채우도록 설정 */
+	border: 0;
+	border-top: 1px solid #dbdbdb; /* 선의 스타일 */
+	margin: 0;
+}
+

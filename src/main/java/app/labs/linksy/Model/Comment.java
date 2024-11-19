@@ -9,4 +9,5 @@ public class Comment {
 	String commentContent;
 	int parentId;
 	Timestamp commentTime;
+	
 }
