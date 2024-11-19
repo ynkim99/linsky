@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="app.labs.linksy.DAO.LoginRepository">
+
+    <!-- Member 객체 매핑 -->
+    <resultMap id="memberResultMap" type="app.labs.linksy.Model.Member">
+        <id property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="userNickname" column="user_nickname"/>
+        <result property="userPwd" column="user_pwd"/>
+        <result property="userEmail" column="user_email"/>
+        <result property="userImg" column="user_img"/>
+        <result property="userIntroduce" column="user_introduce"/>
+    </resultMap>
+
+    <!-- 로그인 -->
+    <select id="login" parameterType="app.labs.linksy.Model.Member" resultMap="memberResultMap">
+        SELECT user_id, user_name, user_nickname, user_pwd, user_email, user_img, user_introduce
+        FROM Member
+        WHERE user_id = #{userId} AND user_pwd = #{userPwd}
+    </select>
+
+</mapper>

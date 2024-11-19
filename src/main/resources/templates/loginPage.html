@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/loginpage.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-section">
+            <img src="/images/logo/blacklogo.png" alt="Linksy Logo" class="logo">
+        </div>
+        <div class="login-section">
+            <div class="login-form">
+                <form action="/login" method="post">
+                    <input type="text" name="userId" placeholder="아이디" required>
+                    <input type="password" name="password" placeholder="비밀번호" required>
+                    <button type="submit">로그인</button>
+                </form>
+                <a href="/newuser"><button type="button">회원가입</button></a>
+            </div>
+        </div>
+    </div>
+    <footer>
+        FOOTER
+    </footer>
+</body>
+</html>

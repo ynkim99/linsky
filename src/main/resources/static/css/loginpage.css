@@ -1,0 +1,40 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.logo-section, .login-section {
+    padding: 20px;
+    margin: 10px;
+}
+
+.logo {
+    width: 100%;
+    max-width: 300px;
+}
+
+.login-form {
+    padding: 20px;
+    text-align: center;
+}
+
+.login-form input, .login-form button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+}

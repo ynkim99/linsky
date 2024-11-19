@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="css/newuserpage.css">
+</head>
+<body>
+    <div class="container">
+        <img src="/images/logo/blacklogo.png" alt="Linksy Logo" class="logo">
+        <form action="/newuser" method="post">
+            <input type="text" name="userId" placeholder="id" required>
+            <span class="duplicate-check" onclick="checkDuplicate()">중복확인</span>
+            <input type="password" name="password" placeholder="비밀번호" required>
+            <input type="password" name="passwordConfirm" placeholder="비밀번호 확인" required>
+            <input type="text" name="name" placeholder="이름" required>
+            <input type="email" name="email" placeholder="이메일" required>
+            <input type="text" name="nickname" placeholder="닉네임" required>
+            <button type="submit">가입 하기</button>
+        </form>
+    </div>
+    <script>
+        function checkDuplicate() {
+            const userId = document.querySelector('input[name="userId"]').value;
+            fetch(`/newuser/${userId}`)
+                .then(response => response.text())
+                .then(data => {
+                    if (data === 'duplicate') {
+                        alert('중복된 ID입니다.');
+                    } else {
+                        alert('사용 가능한 ID입니다.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
