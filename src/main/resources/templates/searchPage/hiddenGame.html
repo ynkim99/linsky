@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidden Mini Game</title>
+    <style>
+        .game-container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .game-title {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .game-area {
+            width: 500px;
+            height: 500px;
+            margin: 0 auto;
+            border: 2px solid #333;
+            position: relative;
+            background: #f0f0f0;
+        }
+        
+        .player {
+            width: 20px;
+            height: 20px;
+            background-color: #ff4444;
+            position: absolute;
+            border-radius: 50%;
+        }
+        
+        .target {
+            width: 20px;
+            height: 20px;
+            background-color: #44ff44;
+            position: absolute;
+            border-radius: 50%;
+        }
+        
+        .score {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        
+        .game-instructions {
+            margin: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+        }
+        
+        .timer {
+            font-size: 24px;
+            margin: 20px;
+            color: #333;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            text-align: center;
+        }
+        
+        .restart-button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background: #44ff44;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">Hidden Mini Game</h1>
+        <div class="game-area" id="game-area">
+            <div class="player" id="player"></div>
+            <div class="target" id="target"></div>
+        </div>
+        <div class="score" id="score">Score: 0</div>
+        <button class="game-instructions" id="instructions-button">Game Instructions</button>
+        <div class="timer" id="timer">시간: 30초</div>
+        <div class="game-over" id="gameOver">
+            <h2>게임 종료!</h2>
+            <p>최종 점수: <span id="finalScore">0</span></p>
+            <button class="restart-button" onclick="restartGame()">다시 시작</button>
+        </div>
+    </div>
+    <script>
+        const gameArea = document.getElementById('game-area');
+        const player = document.getElementById('player');
+        const target = document.getElementById('target');
+        const scoreDisplay = document.getElementById('score');
+        const instructionsButton = document.getElementById('instructions-button');
+        const timerElement = document.getElementById('timer');
+        const gameOverElement = document.getElementById('gameOver');
+        const finalScoreElement = document.getElementById('finalScore');
+        
+        let score = 0;
+        let timeLeft = 30;
+        let gameInterval;
+        let isGameActive = true;
+        let gameStarted = false;
+        
+        function movePlayer(event) {
+            const rect = gameArea.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            player.style.left = x - 10 + 'px';
+            player.style.top = y - 10 + 'px';
+        }
+        
+        function moveTarget() {
+            const rect = gameArea.getBoundingClientRect();
+            const x = Math.random() * (rect.width - 40);
+            const y = Math.random() * (rect.height - 40);
+            target.style.left = x + 'px';
+            target.style.top = y + 'px';
+        }
+        
+        function updateScore() {
+            score++;
+            scoreDisplay.textContent = 'Score: ' + score;
+        }
+        
+        function showInstructions() {
+            const instructions = document.createElement('div');
+            instructions.className = 'game-instructions';
+            instructions.textContent = 'Use your mouse to move the player. Click the target to score points.';
+            document.body.appendChild(instructions);
+            instructionsButton.style.display = 'none';
+        }
+        
+        function resetTimer() {
+            timeLeft = 30;
+            timerElement.textContent = `시간: ${timeLeft}초`;
+            gameStarted = false;
+            if (gameInterval) {
+                clearInterval(gameInterval);
+            }
+        }
+        
+        function randomizeTargetPosition() {
+            const rect = gameArea.getBoundingClientRect();
+            const x = Math.random() * (rect.width - 40);
+            const y = Math.random() * (rect.height - 40);
+            target.style.left = x + 'px';
+            target.style.top = y + 'px';
+        }
+        
+        function resetGame() {
+            // 점수 초기화
+            score = 0;
+            scoreDisplay.textContent = score;
+            
+            // 타이머 초기화
+            resetTimer();
+            
+            // 표적 초기화
+            target.style.display = 'block';
+            randomizeTargetPosition();
+            
+            // 게임 상태 초기화
+            isGameActive = true;
+            gameOverElement.style.display = 'none';
+        }
+        
+        function startGame() {
+            resetGame();
+            startTimer();
+        }
+
+        function restartGame() {
+            resetGame();
+            startTimer();
+        }
+        
+        function startTimer() {
+            if (!gameStarted) {
+                gameStarted = true;
+                resetTimer();  // 첫 클릭 시 타이머 리셋
+                gameInterval = setInterval(() => {
+                    timeLeft--;
+                    timerElement.textContent = `시간: ${timeLeft}초`;
+                    
+                    if (timeLeft <= 0) {
+                        endGame();
+                        clearInterval(gameInterval);  // 타이머 중지
+                    }
+                }, 1000);
+            }
+        }
+
+        function endGame() {
+            isGameActive = false;
+            clearInterval(gameInterval);  // 타이머 중지
+            gameOverElement.style.display = 'block';
+            finalScoreElement.textContent = score;
+            target.style.display = 'none';  // 타겟 숨기기
+            gameStarted = false;  // 게임 시작 상태 초기화
+        }
+
+        // 게임 영역 클릭 이벤트
+        gameArea.addEventListener('click', function(event) {
+            if (!isGameActive || timeLeft <= 0) return;  // 시간이 0 이하면 클릭 무시
+            
+            const rect = gameArea.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            const distance = Math.sqrt(
+                Math.pow(x - (parseInt(target.style.left) + 10), 2) +
+                Math.pow(y - (parseInt(target.style.top) + 10), 2)
+            );
+            
+            if (distance < 20) {
+                score += 1;
+                scoreDisplay.textContent = score;
+                if (timeLeft > 0) {  // 시간이 남아있을 때만 타겟 이동
+                    randomizeTargetPosition();
+                }
+            }
+        });
+        
+        gameArea.addEventListener('mousemove', movePlayer);
+        
+        instructionsButton.addEventListener('click', showInstructions);
+        
+        startGame();
+    </script>
+</body>
+</html>

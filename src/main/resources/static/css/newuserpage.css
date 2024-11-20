@@ -10,7 +10,7 @@ body {
 }
 
 .container {
-    background-color: #eee;
+    background-color: #fff;
     padding: 20px;
     border-radius: 10px;
     width: 300px;
@@ -23,23 +23,22 @@ body {
 }
 
 .container input[type="text"],
-.container input[type="password"] {
+.container input[type="password"],
+.container input[type="email"] {
     width: 100%;
     padding: 10px;
     margin: 5px 0;
     border: none;
     border-radius: 5px;
-    background-color: #d3c3c3;
+    background-color: #bbdefb;
 }
 
 .container button {
     width: 100%;
     padding: 10px;
-    margin-top: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #b8a9a9;
-    color: #fff;
+    background-color: #bbdefb;
     font-size: 16px;
     cursor: pointer;
 }
@@ -47,9 +46,39 @@ body {
 .container .duplicate-check {
     display: inline-block;
     margin-left: 10px;
-    background-color: #b8a9a9;
+    background-color: #bbdefb;
     padding: 5px 10px;
     border-radius: 5px;
-    color: #fff;
     cursor: pointer;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px; 
+    box-sizing: border-box;
+    height: 40px; 
+}
+
+.input-group .duplicate-check {
+    padding: 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #bbdefb;
+    cursor: pointer;
+    box-sizing: border-box;
+    width: 100px; 
+    height: 40px;
+}
+
+.login-form {
+    max-width: 400px;
+    margin: 0 auto;
 }

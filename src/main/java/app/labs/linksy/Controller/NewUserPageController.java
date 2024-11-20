@@ -6,6 +6,8 @@ import app.labs.linksy.Service.NewUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class NewUserPageController {
@@ -36,8 +38,11 @@ public class NewUserPageController {
     }
 
     @GetMapping("/newuser/{userId}")
-    public String duplicateCheck(@PathVariable("userId") String userId) {
+    @ResponseBody
+    public Map<String, String> duplicateCheck(@PathVariable("userId") String userId) {
         boolean isDuplicate = newUserService.isUserIdDuplicate(userId);
-        return isDuplicate ? "duplicate" : "available";
+        Map<String, String> response = new HashMap<>();
+        response.put("data", isDuplicate ? "duplicate" : "available" );
+        return response;
     }
 }

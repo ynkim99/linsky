@@ -76,5 +76,10 @@ public class SearchController {
 		model.addAttribute("feed", feed);
 		return "searchPage/searchFeedPopup";
 	}
+	
+	@GetMapping("/search/hiddenGame")
+	public String hiddenGame() {
+		return "searchPage/hiddenGame";
+	}
 	 
 }

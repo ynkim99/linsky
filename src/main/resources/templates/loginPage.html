@@ -8,22 +8,29 @@
 </head>
 <body>
     <div class="container">
-        <div class="logo-section">
-            <img src="/images/logo/blacklogo.png" alt="Linksy Logo" class="logo">
+        <div class="phone-section">
+            <img src="/images/logo/blacklogo.png" alt="Phone Image" class="phone-image">
         </div>
+        <div class="vertical-line"></div>
         <div class="login-section">
+            <div class="logo">
+                <img src="/images/logo/blacklogo.png" alt="Linksy Logo" class="logo">
+            </div>
             <div class="login-form">
                 <form action="/login" method="post">
                     <input type="text" name="userId" placeholder="아이디" required>
                     <input type="password" name="password" placeholder="비밀번호" required>
                     <button type="submit">로그인</button>
                 </form>
-                <a href="/newuser"><button type="button">회원가입</button></a>
+                <p>계정이 없으신가요? <a href="/newuser">가입하기</a></p>
             </div>
         </div>
     </div>
     <footer>
-        FOOTER
+        <div class="footer-content">
+            <p><a href="/teaminfo">team info</a></p>
+            <p>Copyright 2024 Linksy. All rights reserved.</p>
+        </div>
     </footer>
 </body>
 </html>

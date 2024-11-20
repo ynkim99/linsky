@@ -9,30 +9,56 @@
 <body>
     <div class="container">
         <img src="/images/logo/blacklogo.png" alt="Linksy Logo" class="logo">
-        <form action="/newuser" method="post">
-            <input type="text" name="userId" placeholder="id" required>
-            <span class="duplicate-check" onclick="checkDuplicate()">중복확인</span>
-            <input type="password" name="password" placeholder="비밀번호" required>
-            <input type="password" name="passwordConfirm" placeholder="비밀번호 확인" required>
-            <input type="text" name="name" placeholder="이름" required>
-            <input type="email" name="email" placeholder="이메일" required>
-            <input type="text" name="nickname" placeholder="닉네임" required>
-            <button type="submit">가입 하기</button>
+        <form action="/newuser" method="post" class="login-form">
+            <div class="input-group">
+                <input type="text" name="userId" placeholder="id" required>
+                <button type="button" class="duplicate-check" onclick="checkDuplicate()">중복확인</button>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" name="password" placeholder="비밀번호" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="passwordConfirm" name="passwordConfirm" placeholder="비밀번호 확인" required>
+            </div>
+            <div class="input-group">
+                <input type="text" name="name" placeholder="이름" required>
+            </div>
+            <div class="input-group">
+                <input type="email" name="email" placeholder="이메일" required>
+            </div>
+            <div class="input-group">
+                <input type="text" name="nickname" placeholder="닉네임" required>
+            </div>
+            <button type="submit" onclick="return validatePasswords()">가입 하기</button>
         </form>
     </div>
     <script>
         function checkDuplicate() {
-            const userId = document.querySelector('input[name="userId"]').value;
+            const userIdInput = document.querySelector('input[name="userId"]');
+            const userId = userIdInput.value;
             fetch(`/newuser/${userId}`)
-                .then(response => response.text())
+                .then(response => response.json())
                 .then(data => {
-                    if (data === 'duplicate') {
+                    if (data.data === 'duplicate') {
                         alert('중복된 ID입니다.');
+                        userIdInput.value = '';
                     } else {
                         alert('사용 가능한 ID입니다.');
+                        userIdInput.disabled = true;
                     }
                 })
                 .catch(error => console.error('Error:', error));
+        }
+
+        function validatePasswords() {
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+            if (password !== passwordConfirm) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return false; // 폼 제출을 막음
+            }
+            return true; // 폼 제출 허용
         }
     </script>
 </body>

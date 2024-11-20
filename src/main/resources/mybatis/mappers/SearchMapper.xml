@@ -24,7 +24,8 @@
     <select id="findFeedsByKeyword" resultMap="feedWithImagesMap">
         SELECT f.feed_id, f.user_id, f.feed_content, f.feed_time, f.like_amount,
                m.user_name, m.user_img,
-               fi.img_name
+               fi.img_name,
+               (SELECT COUNT(*) FROM Comments c WHERE c.feed_id = f.feed_id) AS comment_count
         FROM Feed f
         JOIN Member m ON f.user_id = m.user_id
         LEFT JOIN Feed_Image fi ON f.feed_id = fi.feed_id
@@ -36,7 +37,8 @@
     <select id="findFeedsByHashtag" resultMap="feedWithImagesMap">
         SELECT f.feed_id, f.user_id, f.feed_content, f.feed_time, f.like_amount,
                m.user_name, m.user_img,
-               fi.img_name
+               fi.img_name,
+               (SELECT COUNT(*) FROM Comments c WHERE c.feed_id = f.feed_id) AS comment_count
         FROM Feed f
         JOIN Feed_Hashtag fh ON f.feed_id = fh.feed_id
         JOIN Hashtag h ON fh.hashtag_id = h.hashtag_id

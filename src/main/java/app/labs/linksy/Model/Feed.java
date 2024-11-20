@@ -17,4 +17,5 @@ public class Feed {
 	Member member;
 	List<FeedImage> images;
 	List<Comment> comments;
+	int commentCount;
 }
