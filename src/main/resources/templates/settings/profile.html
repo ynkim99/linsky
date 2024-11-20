@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linksy - 프로필 편집</title>
+    <link rel="stylesheet" type="text/css" href="/css/profile.css">
+</head>
+<body>
+<div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo_img">
+            <a href="/">
+                <img src="/images/logo/blacklogo.png" alt="Linksy 로고">
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <a href="profile">프로필 편집</a>
+            <a href="notifications">알림</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>프로필 편집</h1>
+        <div class="profile-edit">
+            <form id="profileForm" enctype="multipart/form-data">
+                <div class="profile-section">
+                    <!-- 프로필 사진 -->
+                    <div class="profile-image-wrapper">
+                        <img src="/images/profile/default-profile.png" id="profileImage" alt="프로필 이미지">
+                    </div>
+                    <div class="file-input">
+                        <label for="profileImageUpload">사진 변경</label>
+                        <input type="file" id="profileImageUpload" name="profileImage" accept="image/*" onchange="previewImage(event)">
+                        <button type="button" onclick="deleteProfileImage()">사진 삭제</button>
+                    </div>
+                </div>
+
+                <!-- 닉네임 표시 -->
+                <div>
+                    <p>현재 닉네임: <strong id="nickname">사용자닉네임</strong></p>
+                </div>
+
+                <!-- 소개글 -->
+                <div class="bio-section">
+                    <label for="bio">소개글</label>
+                    <textarea id="bio" name="bio" placeholder="자기소개를 작성하세요.(200자 이내)" maxlength="200"></textarea>
+                    <p id="charCount">0/200</p>
+                </div>
+
+                <!-- 버튼 -->
+                <div>
+                    <button type="button" onclick="saveProfile()">저장</button> <br> <br>
+                    <button type="button" onclick="openModal('nicknameModal')">닉네임 변경</button> <br> <br>
+                    <button type="button" onclick="openModal('passwordModal')">비밀번호 변경</button>
+                </div>
+                <p id="saveMessage" style="color: green; display: none;">프로필이 저장되었습니다!</p>
+            </form>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        FRIEND
+    </div>
+</div>
+
+<!-- 닉네임 변경 모달 -->
+<div id="nicknameModal" class="modal">
+    <div class="modal-content">
+        <h2>닉네임 변경</h2>
+        <input type="text" id="newNickname" placeholder="새 닉네임 입력">
+        <button onclick="saveNickname()">저장</button>
+        <button onclick="closeModal('nicknameModal')">취소</button>
+    </div>
+</div>
+
+<!-- 비밀번호 변경 모달 -->
+<div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <h2>비밀번호 변경</h2>
+        <input type="password" id="currentPassword" placeholder="현재 비밀번호"><br>
+        <input type="password" id="newPassword" placeholder="새 비밀번호"><br>
+        <input type="password" id="confirmPassword" placeholder="비밀번호 확인">
+        <button onclick="savePassword()">저장</button>
+        <button onclick="closeModal('passwordModal')">취소</button>
+    </div>
+
+</div>
+
+
+
+
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById('profileImage').src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function deleteProfileImage() {
+        document.getElementById('profileImage').src = "/images/profile/default-profile.png";
+    }
+
+    function updateCharacterCount() {
+        const bioTextarea = document.getElementById('bio');
+        const charCount = document.getElementById('charCount');
+        charCount.textContent = `${bioTextarea.value.length}/200`;
+    }
+
+    document.getElementById('bio').addEventListener('input', updateCharacterCount);
+
+    function saveProfile() {
+        const formData = new FormData(document.getElementById('profileForm'));
+        fetch('/settings/save-profile', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) throw new Error(`서버 오류: ${response.status}`);
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('saveMessage').style.display = 'block';
+                alert(data);
+            })
+            .catch(error => {
+                alert("프로필 저장 중 오류 발생");
+                console.error(error);
+            });
+    }
+
+    function saveNickname() {
+        const newNickname = document.getElementById('newNickname').value.trim();
+        if (!newNickname) {
+            alert("닉네임을 입력해주세요.");
+            return;
+        }
+
+        fetch('/settings/save-nickname', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nickname: newNickname })
+        })
+            .then(response => {
+                if (!response.ok) throw new Error(`서버 오류: ${response.status}`);
+                return response.text();
+            })
+            .then(data => {
+                alert(data);
+                document.getElementById('nickname').textContent = ` ${newNickname}`;
+                closeModal('nicknameModal');
+            })
+            .catch(error => {
+                alert("닉네임 변경 중 오류 발생");
+                console.error(error);
+            });
+    }
+
+    function savePassword() {
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (newPassword !== confirmPassword) {
+            alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+            return;
+        }
+
+        fetch('/settings/save-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currentPassword, newPassword })
+        })
+            .then(response => {
+                if (!response.ok) throw new Error(`서버 오류: ${response.status}`);
+                return response.text();
+            })
+            .then(data => {
+                alert(data);
+                closeModal('passwordModal');
+            })
+            .catch(error => {
+                alert("비밀번호 변경 중 오류 발생");
+                console.error(error);
+            });
+    }
+
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = "flex";
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+    }
+
+</script>
+</body>
+</html>

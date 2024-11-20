@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="app.labs.linksy.mapper.NotificationSettingsMapper">
+    <select id="getSettings" resultType="map">
+        SELECT email_notifications AS emailNotifications,
+               push_notifications AS pushNotifications,
+               sms_notifications AS smsNotifications
+        FROM notification_settings
+        WHERE user_id = #{userId}
+    </select>
+
+    <update id="saveSettings">
+        UPDATE notification_settings
+        SET email_notifications = #{emailNotifications},
+            push_notifications = #{pushNotifications},
+            sms_notifications = #{smsNotifications}
+        WHERE user_id = #{userId}
+    </update>
+</mapper>

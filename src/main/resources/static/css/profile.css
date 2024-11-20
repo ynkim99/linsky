@@ -1,0 +1,195 @@
+/* 기본 스타일 */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+}
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* 사이드바 */
+.sidebar {
+    width: 20%;
+    background-color: #f4f4f4;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.sidebar h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+}
+.sidebar h1 span {
+    color: #333;
+}
+.logo_img {
+    margin-bottom: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logo_img img {
+    width: 250px;
+    height: auto;
+    max-width: 100%;
+}
+.sidebar-menu a {
+    display: block;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: transparent;
+    color: #333;
+    text-decoration: none;
+    border: none;
+    text-align: center;
+}
+.sidebar-menu a:hover {
+    color: #555;
+    background-color: transparent;
+    text-decoration: underline;
+}
+
+/* 메인 콘텐츠 */
+.main-content {
+    width: 60%;
+    background-color: #f9f9f9;
+    padding: 30px;
+}
+.main-content h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+.profile-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.profile-section img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    object-fit: cover;
+}
+.bio-section textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 200px;
+}
+#charCount {
+    font-size: 12px;
+    color: #888;
+}
+.profile-edit button {
+    padding: 6px 12px;
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    width: auto;
+    max-width: 150px;
+}
+.profile-edit button:hover {
+    background-color: #f0f0f0;
+}
+
+/* 오른쪽 패널 */
+.right-panel {
+    width: 20%;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
+/* 프로필 사진 영역 */
+.profile-image-wrapper {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    border: 2px solid #000;
+    overflow: hidden;
+}
+.profile-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.file-input label {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #ffffff;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+}
+.file-input label:hover {
+    background-color: #f0f0f0;
+}
+.file-input input[type="file"] {
+    display: none;
+}
+
+/* 팝업 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.modal button {
+    padding: 6px 12px;
+    font-size: 14px;
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    width: auto;
+    max-width: 200px;
+}
+.modal button:hover {
+    background-color: #f0f0f0;
+}
