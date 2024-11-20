@@ -10,7 +10,8 @@
             USER_NICKNAME AS userNickname, 
             USER_PWD AS userPwd, 
             USER_EMAIL AS userEmail, 
-            USER_IMG AS userImg 
+            USER_IMG AS userImg,
+            USER_INTRODUCE AS userIntroduce
         FROM MEMBER 
         WHERE USER_ID = #{userId}
     </select>

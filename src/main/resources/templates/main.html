@@ -13,14 +13,56 @@
 	<div class="main">
 		<!-- 메뉴 바-->
 		<section class="left" th:replace="~{menu_bar :: menu_bar}">
-
 		</section>
-
-		<!-- 메인 피드 -->
 		<section class="center">
 			<div class="feeds-container">
+				<!--
+				<div th:each="feed : ${feeds}" class="feed">
+					
+					<div class="feed-header">
+						<img th:src="@{/images/profile/} + ${feed.member.userImg}" alt="프로필 사진" class="profile-img">
+						<span class="username" th:text="${feed.member.userNickname}"></span>
+					</div>
+					
+					<div class="feed-image">
+						<div th:each="image : ${feed.feedImages}">
+							<img th:src="@{/images/feeds/} + ${image.imgName}" alt="게시물 사진">
+						</div>
+					</div>
+					
+					<div class="feed-footer">
+						<div class="feed-actions-likes">
+							<div class="feed-actions">
+								<i class="bi bi-heart" 
+									th:classappend="${feed.isLiked ? 'bi-heart-fill' : 'bi-heart'}" 
+									th:onclick="'toggleLike(this, ' + ${feed.feedId} + ')'" >
+								</i>
+							</div>
+							<div class="likes" th:text="'좋아요 ' + ${feed.likeAmount} + '개'">
+							</div>
+						</div>
+						<div class="feed-caption">
+							<span class="username" th:text="${feed.member.userNickname}"></span>
+							<span class="caption-text" th:text="${feed.feedContent}"></span>
+							<span class="read-more" onclick="toggleCaption(this)">더보기</span>
+						</div>
+						
+						<div class="comments-view">
+							<span class="view-comments" onclick="showComments(this)">댓글 n개 보기</span>
+							<div class="comments-list">
+								댓글 내용은 여기에서 동적으로 추가됩니다. 
+							</div>
+						</div>
+						
+						<div class="comment-input">
+							<input type="text" placeholder="댓글 달기..." />
+							<button>게시</button>
+						</div>
+					</div>
+				</div>
+				-->
 				<div class="feed">
-					<!-- 게시물 상단 - 사용자 정보 -->
+					<!--  게시물 상단 - 사용자 정보 -->
 					<div class="feed-header">
 						<img src="/images/logo/2.png" alt="프로필 사진" class="profile-img">
 						<span class="username">cwbt_geunwon</span>
@@ -44,11 +86,11 @@
 							<span class="caption-text" data-full-text="아하... 운전 똑바로해!!!!!!!!!!!!!!!!!!!!!">아하...  운전 똑바로해</span>
 							<span class="read-more" onclick="toggleCaption(this)">더보기</span>
 						</div>
-						<!-- 댓글 n개 보기-->
+						<!-- 댓글 n개 보기 -->
 						<div class="comments-view">
 							<span class="view-comments" onclick="showComments(this)">댓글 n개 보기</span>
 							<div class="comments-list">
-								<!-- 댓글 내용은 여기에서 동적으로 추가됩니다. -->
+								댓글 내용은 여기에서 동적으로 추가됩니다. 
 							</div>
 						</div>
 						<!-- 댓글 입력 -->
@@ -57,20 +99,11 @@
 							<button>게시</button>
 						</div>
 					</div>
-				</div>
+				</div>	
 			</div>
 		</section>
 		<!-- 오른쪽 계정 및 친구-->
 		<section class="right">
-			<!-- 본인 계정 정보  
-			<div class="user-profile">
-				<img src="/images/logo/1.png" alt="프로필 사진" class="my-profile">
-				<div class="user-info">
-					<span class="my-username">cwon.log</span>
-					<span class="my-user-description">웹소개 Cwon & 유튜버 REALIT</span>
-				</div>
-			</div>
-			-->
 			<div class="user-profile">
 				<img th:src="${member.userImg}" alt="프로필 사진" class="my-profile">
 			    <div class="user-info"> 

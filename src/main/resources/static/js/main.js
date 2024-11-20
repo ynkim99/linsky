@@ -45,6 +45,35 @@ function showComments(spanElement) {
     }
 }
 
+function toggleLike(element, feedId) {
+    const isLiked = element.classList.contains("bi-heart-fill");
+    const url = isLiked ? "/linksy/feed/unlike" : "/linksy/feed/like";
+    const userId = "testUser"; // 현재 로그인된 사용자 ID를 가져오세요.
+
+    fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `feedId=${feedId}&userId=${userId}`,
+    })
+        .then(response => response.json())
+        .then(likeAmount => {
+            // 좋아요 상태 업데이트
+            if (isLiked) {
+                element.classList.remove("bi-heart-fill");
+                element.classList.add("bi-heart");
+            } else {
+                element.classList.remove("bi-heart");
+                element.classList.add("bi-heart-fill");
+            }
+            // 좋아요 개수 업데이트
+            const likesElement = element.closest(".feed-footer").querySelector(".likes");
+            likesElement.textContent = `좋아요 ${likeAmount}개`;
+        })
+        .catch(error => console.error("Error:", error));
+}
+
 // 더보기 기능
 function toggleCaption(readMoreElement) {
     const caption = readMoreElement.previousElementSibling;
@@ -59,3 +88,4 @@ function toggleCaption(readMoreElement) {
         readMoreElement.innerText = "더보기";
     }
 }
+
