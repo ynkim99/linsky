@@ -4,9 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+<<<<<<< HEAD
 @Getter @Setter @ToString
+=======
+@Getter @Setter
+@ToString
+>>>>>>> origin/ynkim2
 public class FeedLike {
-	int userFeedLikeId;
-	String userId;
-	int feedId;
+	private int userFeedLikeId;
+	private String userId;
+	private int feedId;
 }

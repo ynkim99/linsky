@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="app.labs.linksy.DAO.FeedRepository">
+
+	<!-- FeedResultMap 정의 -->
+    <resultMap id="FeedResultMap" type="app.labs.linksy.Model.Feed">
+    <result property="feedId" column="FEED_ID"/>
+    <result property="userId" column="USER_ID"/>
+    <result property="feedContent" column="FEED_CONTENT"/>
+    <result property="feedTime" column="FEED_TIME"/>
+    <result property="likeAmount" column="LIKE_AMOUNT"/>
+    <association property="member" javaType="app.labs.linksy.Model.Member">
+        <result property="userNickname" column="USERNICKNAME"/>
+        <result property="userImg" column="USERIMG"/>
+    </association>
+	<collection property="feedImages" ofType="app.labs.linksy.Model.FeedImage">
+	        <result property="imgName" column="FEEDIMAGE"/>
+	</collection>
+	</resultMap>
+
+    <!-- <select id="getAllFeeds" resultType="app.labs.linksy.Model.Feed"> -->
+    <select id="getAllFeeds" resultMap="FeedResultMap">
+        SELECT f.feed_id, f.user_id, f.feed_content, f.feed_time, f.like_amount,
+           m.user_nickname AS userNickname, m.user_img AS userImg, 
+           fi.img_name AS feedImage
+        FROM Feed f
+        JOIN Member m ON f.user_id = m.user_id
+        JOIN Feed_Image fi ON f.feed_id = fi.feed_id
+    </select>
+    
+    <!-- 좋아요 추가 -->
+    <insert id="addLike">
+        INSERT INTO Feed_Like (user_feed_like_id, user_id, feed_id)
+        VALUES (SEQ_FEED_LIKE.NEXTVAL, #{userId}, #{feedId})
+    </insert>
+
+    <!-- 좋아요 삭제 -->
+    <delete id="removeLike">
+        DELETE FROM Feed_Like
+        WHERE user_id = #{userId} AND feed_id = #{feedId}
+    </delete>
+
+    <!-- 좋아요 개수 가져오기 -->
+    <select id="getLikeAmount" resultType="int">
+        SELECT COUNT(*)
+        FROM Feed_Like
+        WHERE feed_id = #{feedId}
+    </select>
+    
+</mapper>

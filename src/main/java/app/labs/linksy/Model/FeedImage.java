@@ -4,9 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+<<<<<<< HEAD
 @Getter @Setter @ToString
+=======
+@Getter @Setter
+@ToString
+>>>>>>> origin/ynkim2
 public class FeedImage {
-	int imageId;
-	int feedId;
-	String imgName;
+	private int imageId;
+	private int feedId;
+	private String imgName;
 }

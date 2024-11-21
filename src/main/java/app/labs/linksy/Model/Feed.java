@@ -18,4 +18,14 @@ public class Feed {
 	List<FeedImage> images;
 	List<Comment> comments;
 	int commentCount;
+@Getter @Setter
+@ToString
+public class Feed {
+	private int feedId;
+	private String userId;
+	private String feedContent;
+	private Timestamp feedTime;
+	private int likeAmount;
+	private List<FeedImage> feedImages;
+	private Member member;
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="app.labs.linksy.DAO.MemberRepository">
+    <select id="getMemberByUserId" parameterType="String" resultType="app.labs.linksy.Model.Member">
+        SELECT 
+            USER_ID AS userId, 
+            USER_NAME AS userName, 
+            USER_NICKNAME AS userNickname, 
+            USER_PWD AS userPwd, 
+            USER_EMAIL AS userEmail, 
+            USER_IMG AS userImg,
+            USER_INTRODUCE AS userIntroduce
+        FROM MEMBER 
+        WHERE USER_ID = #{userId}
+    </select>
+</mapper>
