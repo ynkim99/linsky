@@ -1,45 +1,72 @@
 package app.labs.linksy.Service;
 
 import app.labs.linksy.DAO.FeedCreateMapper;
+import app.labs.linksy.DAO.HashtagMapper;
 import app.labs.linksy.Model.Feed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.*;
 
 @Service
 public class FeedCreateService {
 
+
+
     @Autowired
     private FeedCreateMapper feedCreateMapper;
+
+    @Autowired
+    private HashtagMapper hashtagMapper;
 
     /**
      * Create a new feed, including saving hashtags and images.
      */
     @Transactional
-    public void createFeed(Feed feed, List<String> hashtags, List<String> images) {
+    public void createFeed(Feed feed, List<String> hashtags, List<String> imageNames) {
         try {
+            // 피드 삽입
             feedCreateMapper.insertFeed(feed);
             int feedId = feed.getFeedId(); // 자동 증가된 피드 ID 가져오기
-            System.out.println("Feed inserted with ID: " + feedId); // 디버깅 로그
+            System.out.println("Feed inserted with ID: " + feedId);
 
-            // 해시태그 삽입
-            for (String hashtag : hashtags) {
-                int hashtagId = feedCreateMapper.insertHashtagAndReturnId(hashtag);
-                System.out.println("Inserted hashtag with ID: " + hashtagId); // 디버깅 로그
-                feedCreateMapper.insertFeedHashtag(feedId, hashtagId);
-            }
+            // 해시태그 처리 (정제 및 저장)
+            saveHashtags(feedId, hashtags);
 
             // 이미지 삽입
-            for (String imgName : images) {
+            for (String imgName : imageNames) {
                 feedCreateMapper.insertFeedImage(feedId, imgName);
-                System.out.println("Inserted image with name: " + imgName); // 디버깅 로그
+                System.out.println("Inserted image with name: " + imgName);
             }
         } catch (Exception e) {
             e.printStackTrace();
             throw e; // 트랜잭션 롤백을 위해 예외 재던짐
         }
+    }
+
+    /**
+     * 해시태그를 정제하는 메서드.
+     */
+    private String refineHashtag(String hashtag) {
+        // '#' 제거 및 소문자로 변환
+        String refined = hashtag.replaceFirst("^#", "").trim().toLowerCase();
+
+        // 길이 제한 (2-20자)
+        if (refined.length() < 2) {
+            return null;
+        }
+        if (refined.length() > 20) {
+            refined = refined.substring(0, 20);
+        }
+
+        return refined;
     }
 
 
@@ -67,6 +94,8 @@ public class FeedCreateService {
         }
     }
 
+
+
     /**
      * Delete a feed by its ID, including associated hashtags and images.
      */
@@ -82,6 +111,49 @@ public class FeedCreateService {
      * Get a feed by its ID, including associated hashtags and images.
      */
     public Feed getFeedById(int feedId) {
-        return feedCreateMapper.findFeedById(feedId);
+        return feedCreateMapper.getFeedById(feedId);
     }
+
+    @Transactional
+    public void saveHashtags(int feedId, List<String> hashtags) {
+        for (String tag : hashtags) {
+            // 해시태그 정제
+            String refinedTag = refineHashtag(tag);
+
+            // 해시태그 ID 찾기 또는 생성
+            Integer tagId = hashtagMapper.findHashtagIdByName(refinedTag);
+            if (tagId == null) {
+                hashtagMapper.insertHashtag(refinedTag);
+                tagId = hashtagMapper.findHashtagIdByName(refinedTag);
+            }
+
+            // 피드-해시태그 관계 저장
+            hashtagMapper.insertFeedHashtag(feedId, tagId);
+            System.out.println("Inserted hashtag with ID: " + tagId + " for feed ID: " + feedId);
+        }
+    }
+
+
+
+    public Set<String> extractHashtags(String content) {
+        Set<String> hashtags = new HashSet<>();
+        Pattern pattern = Pattern.compile("#([a-zA-Z가-힣0-9_]+)"); // 수정된 정규식: 해시태그는 영문, 숫자, 한글, 밑줄만 허용
+        Matcher matcher = pattern.matcher(content);
+
+        while (matcher.find()) {
+            hashtags.add(matcher.group(1)); // "#" 기호를 제외한 해시태그 부분만 추가
+        }
+
+        return hashtags;
+    }
+
+    public List<String> getFeedImages(int feedId) {
+        return feedCreateMapper.getImagesByFeedId(feedId);
+    }
+
+    public void updateFeedContent(Feed feed) {
+        feedCreateMapper.updateFeed(feed);
+    }
+
+
 }

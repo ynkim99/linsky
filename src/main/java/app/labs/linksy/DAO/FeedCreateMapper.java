@@ -63,4 +63,12 @@ public interface FeedCreateMapper {
             @Result(property = "likeAmount", column = "LIKE_AMOUNT")
     })
     Feed findFeedById(int feedId);
+
+
+    @Select("SELECT IMG_NAME FROM FEED_IMAGE WHERE FEED_ID = #{feedId}")
+    List<String> getImagesByFeedId(int feedId);
+
+    @Select("SELECT * FROM FEED WHERE FEED_ID = #{feedId}")
+    Feed getFeedById(@Param("feedId") int feedId);
+
 }
