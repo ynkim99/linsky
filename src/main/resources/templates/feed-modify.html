@@ -158,6 +158,7 @@
             .then(response => {
               if (response.ok) {
                 alert('Feed updated successfully!');
+                window.location.href = '/modifyFeedSuccess';  // 수정 성공 후 성공 페이지로 이동
               } else {
                 throw new Error('게시물 수정에 실패했습니다.');
               }
@@ -167,6 +168,7 @@
               alert('게시물 수정 중 오류가 발생했습니다.');
             });
   }
+
 
   // 닫기 버튼 눌렀을 때 실행될 closeFeed 함수 정의
   function closeFeed() {

@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.bind.annotation.PutMapping;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,12 +40,6 @@ public class FeedCreateController {
         return "feed-create"; // feed-create.html 파일과 매핑
     }
 
-    // 게시물 생성 성공 페이지 매핑
-    @GetMapping("/createFeedSuccess")
-    public String createFeedSuccessPage() {
-        return "feed-create-success"; // feed-create-success.html 파일과 매핑
-    }
-
     // 게시물 수정 페이지 매핑
     @GetMapping("/feed/edit/{feedId}")
     public String editFeedPage(@PathVariable("feedId") int feedId, Model model) {
@@ -64,12 +57,6 @@ public class FeedCreateController {
         model.addAttribute("imageNames", imageNames);
 
         return "feed-modify"; // feed-modify.html 파일과 매핑
-    }
-
-    // 게시물 수정 성공 페이지 매핑
-    @GetMapping("/modifyFeedSuccess")
-    public String modifyFeedSuccessPage() {
-        return "feed-modify-success"; // feed-modify-success.html 파일과 매핑
     }
 
     // 게시물 생성 처리
@@ -122,61 +109,8 @@ public class FeedCreateController {
     }
 
     // 게시물 수정 처리
-    @PostMapping("/feed/update")
-    public String updateFeed(@RequestParam("feedId") int feedId,
-                             @RequestParam("feedContent") String feedContent) {
-        logger.info("Received request to update feed with ID: " + feedId);
-        try {
-            Feed feed = new Feed();
-            feed.setFeedId(feedId);
-            feed.setFeedContent(feedContent);
-
-            feedCreateService.updateFeedContent(feed);
-            logger.info("Feed successfully updated with ID: " + feedId);
-
-            return "redirect:/modifyFeedSuccess";
-        } catch (Exception e) {
-            logger.severe("Unexpected error occurred: " + e.getMessage());
-            e.printStackTrace();
-            return "redirect:/error";
-        }
-    }
-
-    // 게시물 삭제 처리
-    @PostMapping("/feed/delete/{feedId}")
-    public String deleteFeed(@PathVariable("feedId") int feedId) {
-        logger.info("Received request to delete feed with ID: " + feedId);
-        try {
-            feedCreateService.deleteFeed(feedId);
-            logger.info("Feed successfully deleted with ID: " + feedId);
-            return "redirect:/deleteFeedSuccess";
-        } catch (Exception e) {
-            logger.severe("Error occurred while deleting feed: " + e.getMessage());
-            e.printStackTrace();
-            return "redirect:/error";
-        }
-    }
-
-    // 게시물 수정 또는 삭제 선택 페이지 매핑
-    @GetMapping("/modifyOrDeleteFeedPage/{feedId}")
-    public String modifyOrDeleteFeedPage(@PathVariable("feedId") int feedId, Model model) {
-        model.addAttribute("feedId", feedId);
-        return "feed-modifyordelete"; // feed-modifyordelete.html 파일과 매핑
-    }
-
-    @GetMapping("/feed/{feedId}")
-    @ResponseBody
-    public Feed getFeedById(@PathVariable("feedId") int feedId) {
-        // feedId에 해당하는 Feed 데이터를 가져옴
-        Feed feed = feedCreateService.getFeedById(feedId);
-        if (feed == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Feed not found");
-        }
-        return feed;
-    }
-
-    // 수정된 부분
     @PutMapping("/feed/edit/{feedId}")
+    @ResponseBody
     public String updateFeedById(@PathVariable("feedId") int feedId,
                                  @RequestBody Map<String, String> payload) {
         String feedContent = payload.get("feedContent");
@@ -194,7 +128,53 @@ public class FeedCreateController {
         } catch (Exception e) {
             logger.severe("Unexpected error occurred: " + e.getMessage());
             e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error updating feed");
+        }
+    }
+
+    // 게시물 삭제 처리
+    @DeleteMapping("/feed/delete/{feedId}")
+    public String deleteFeed(@PathVariable("feedId") int feedId) {
+        logger.info("Received request to delete feed with ID: " + feedId);
+        try {
+            feedCreateService.deleteFeed(feedId);
+            logger.info("Feed successfully deleted with ID: " + feedId);
+            return "redirect:/deleteFeedSuccess";
+        } catch (Exception e) {
+            logger.severe("Error occurred while deleting feed: " + e.getMessage());
+            e.printStackTrace();
             return "redirect:/error";
         }
+    }
+
+    // 게시물 삭제 성공 페이지 매핑
+    @GetMapping("/deleteFeedSuccess")
+    public String deleteFeedSuccessPage() {
+        return "feed-delete-success"; // feed-delete-success.html 파일과 매핑
+    }
+
+    // 게시물 수정 또는 삭제 선택 페이지 매핑
+    @GetMapping("/modifyOrDeleteFeedPage/{feedId}")
+    public String modifyOrDeleteFeedPage(@PathVariable("feedId") int feedId, Model model) {
+        model.addAttribute("feedId", feedId);
+        return "feed-modifyordelete"; // feed-modifyordelete.html 파일과 매핑
+    }
+
+    // 특정 피드 조회
+    @GetMapping("/feed/{feedId}")
+    @ResponseBody
+    public Feed getFeedById(@PathVariable("feedId") int feedId) {
+        // feedId에 해당하는 Feed 데이터를 가져옴
+        Feed feed = feedCreateService.getFeedById(feedId);
+        if (feed == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Feed not found");
+        }
+        return feed;
+    }
+
+    // 게시물 수정 성공 페이지 매핑
+    @GetMapping("/modifyFeedSuccess")
+    public String modifyFeedSuccessPage() {
+        return "feed-modify-success"; // feed-modify-success.html 파일과 매핑
     }
 }
