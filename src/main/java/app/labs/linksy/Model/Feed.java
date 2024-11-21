@@ -15,17 +15,7 @@ public class Feed {
 	Timestamp feedTime;
 	int likeAmount;
 	Member member;
-	List<FeedImage> images;
+	List<FeedImage> feedimages;
 	List<Comment> comments;
 	int commentCount;
-@Getter @Setter
-@ToString
-public class Feed {
-	private int feedId;
-	private String userId;
-	private String feedContent;
-	private Timestamp feedTime;
-	private int likeAmount;
-	private List<FeedImage> feedImages;
-	private Member member;
 }
