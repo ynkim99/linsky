@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+  <meta charset="UTF-8">
+  <title>Create/Edit Feed</title>
+  <style>
+    @font-face {
+      font-family: 'SBAggroB';
+      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+    body {
+      font-family: 'SBAggroB', Arial, sans-serif; font-weight: 100;
+      background-color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #feedFormContainer {
+      position: relative;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 800px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    #header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    #closeButton {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #333;
+    }
+    #closeButton:hover {
+      color: #ff0000;
+    }
+    #imageUploadContainer {
+      background-color: #f8f8f8;
+      border: 2px dashed #cccccc;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+      border-radius: 10px;
+    }
+    #imageUploadContainer img {
+      max-width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+    #createEditButton {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #createEditButton:hover {
+      background-color: #0056b3;
+    }
+    #contentContainer {
+      background-color: #f8f8f8;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    #feedContentInput {
+      width: 100%;
+      height: 80px;
+      border: none;
+      resize: none;
+      background: transparent;
+      font-size: 1em;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+<div id="feedFormContainer">
+  <button id="closeButton" onclick="closeFeed()">&times;</button>
+  <div id="header">
+    <h1 style="margin-right: auto;">게시물 수정</h1>
+    <button id="createEditButton" onclick="editFeed()">수정</button>
+  </div>
+  <div id="imageUploadContainer">
+    <img id="existingImage" src="" alt="이미지 미리보기">
+  </div>
+  <div id="contentContainer">
+    <textarea id="feedContentInput" placeholder="피드를 수정해 주세요"></textarea>
+  </div>
+  <!-- 숨김 필드로 feedId 저장 -->
+  <input type="hidden" id="feedId" value="">
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // feedId를 페이지 URL에서 추출하여 숨김 필드에 설정합니다.
+    const feedId = window.location.pathname.split("/").pop();
+    document.getElementById('feedId').value = feedId;
+
+    // 기존 게시물 데이터를 불러옵니다.
+    fetch(`/feed/${feedId}`)
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById('feedContentInput').value = data.feedContent;
+
+              // 이미지 경로가 있는 경우에만 미리보기를 설정합니다.
+              if (data.feedImages && data.feedImages.length > 0) {
+                const relativeImagePath = data.feedImages[0].imgName; // 데이터에서 imgName을 받아옴
+                const imageUrl = "/uploads/" + relativeImagePath.split('/').pop(); // "/uploads/"와 파일명을 조합하여 경로 생성
+                document.getElementById('existingImage').src = imageUrl;
+              } else {
+                document.getElementById('existingImage').alt = "이미지를 불러올 수 없습니다.";
+              }
+            })
+            .catch(error => console.error('Error fetching feed data:', error));
+  });
+
+  function editFeed() {
+    const feedId = document.getElementById('feedId').value;
+    const content = document.getElementById('feedContentInput').value;
+
+    fetch(`/feed/edit/${feedId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ feedContent: content })
+    })
+            .then(response => {
+              if (response.ok) {
+                alert('Feed updated successfully!');
+              } else {
+                throw new Error('게시물 수정에 실패했습니다.');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('게시물 수정 중 오류가 발생했습니다.');
+            });
+  }
+
+  function closeFeed() {
+    document.getElementById('feedFormContainer').style.display = 'none';
+  }
+</script>
+</body>
+</html>
