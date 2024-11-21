@@ -146,7 +146,7 @@
 
     // FormData 객체 생성
     const formData = new FormData();
-    formData.append('content', content);
+    formData.append('feedContent', content);
 
     // 해시태그를 추출하여 FormData에 추가
     const hashtags = content.match(/#\w+/g) || [];
@@ -156,7 +156,7 @@
 
     // 선택된 파일들을 FormData에 추가
     if (files.length > 0) {
-      Array.from(files).forEach((file, index) => {
+      Array.from(files).forEach((file) => {
         formData.append('images', file);
       });
     }
@@ -177,6 +177,105 @@
               // 게시물 생성 성공 시 성공 메시지 표시
               document.getElementById('formContent').style.display = 'none'; // 폼 숨기기
               document.getElementById('successMessage').style.display = 'block'; // 성공 메시지 보여주기
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+  }
+
+
+  // 서버로 POST 요청 전송
+    fetch('/feed/create', {
+      method: 'POST',
+      body: formData,
+    })
+            .then(response => {
+              if (response.ok) {
+                return response.json();
+              } else {
+                throw new Error('Network response was not ok');
+              }
+            })
+            .then(data => {
+              // 게시물 생성 성공 시 성공 메시지 표시
+              document.getElementById('formContent').style.display = 'none'; // 폼 숨기기
+              document.getElementById('successMessage').style.display = 'block'; // 성공 메시지 보여주기
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+
+
+  function closeFeed() {
+    document.getElementById('feedFormContainer').style.display = 'none';
+  }
+
+  function previewImages() {
+    const files = document.getElementById('fileInput').files;
+    const previewContainer = document.getElementById('previewContainer');
+    previewContainer.innerHTML = '';
+
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.className = 'previewImage';
+        img.onclick = function() {
+          window.open(e.target.result, '_blank');
+        };
+        previewContainer.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+
+  let currentFeedId = null;
+  let isEditMode = false;
+
+  function submitFeed() {
+    const content = document.getElementById('feedContentInput').value;
+    const files = document.getElementById('fileInput').files;
+
+    // 디버그 로그 추가
+    console.log("Submitting feed with content:", content);
+    console.log("Number of files:", files.length);
+
+    const formData = new FormData();
+    formData.append('content', content);
+
+    const hashtags = content.match(/#\w+/g) || [];
+    hashtags.forEach((hashtag, index) => {
+      formData.append(`hashtags[${index}]`, hashtag);
+    });
+
+    if (files.length > 0) {
+      Array.from(files).forEach((file) => {
+        formData.append('images', file);
+      });
+    }
+
+    const url = isEditMode ? `/feed/update/${currentFeedId}` : '/feed/create';
+    const method = isEditMode ? 'PUT' : 'POST';
+
+    console.log("Submitting to URL:", url); // 디버그 로그 추가
+
+    fetch(url, {
+      method: method,
+      body: formData,
+    })
+            .then(response => {
+              if (response.ok) {
+                return response.json();
+              } else {
+                throw new Error('Network response was not ok');
+              }
+            })
+            .then(data => {
+              console.log("Feed successfully submitted:", data);
+              document.getElementById('formContent').style.display = 'none';
+              document.getElementById('successMessage').style.display = 'block';
             })
             .catch(error => {
               console.error('Error:', error);
@@ -204,6 +303,24 @@
         previewContainer.appendChild(img);
       };
       reader.readAsDataURL(file);
+    });
+  }
+
+  function initializeEdit(feedId, feedContent, images) {
+    currentFeedId = feedId;
+    isEditMode = true;
+    document.getElementById('formTitle').textContent = '게시물 수정';
+    document.getElementById('createEditButton').textContent = '수정';
+    document.getElementById('feedContentInput').value = feedContent;
+    previewContainer.innerHTML = '';
+    images.forEach(imageUrl => {
+      const img = document.createElement('img');
+      img.src = imageUrl;
+      img.className = 'previewImage';
+      img.onclick = function() {
+        window.open(imageUrl, '_blank');
+      };
+      previewContainer.appendChild(img);
     });
   }
 </script>
