@@ -15,61 +15,17 @@
 		<section class="left" th:replace="~{menu_bar :: menu_bar}">
 		</section>
 		<section class="center">
-			<div class="feeds-container">
-				<!--
-				<div th:each="feed : ${feeds}" class="feed">
-					
-					<div class="feed-header">
-						<img th:src="@{/images/profile/} + ${feed.member.userImg}" alt="프로필 사진" class="profile-img">
-						<span class="username" th:text="${feed.member.userNickname}"></span>
-					</div>
-					
-					<div class="feed-image">
-						<div th:each="image : ${feed.feedImages}">
-							<img th:src="@{/images/feeds/} + ${image.imgName}" alt="게시물 사진">
-						</div>
-					</div>
-					
-					<div class="feed-footer">
-						<div class="feed-actions-likes">
-							<div class="feed-actions">
-								<i class="bi bi-heart" 
-									th:classappend="${feed.isLiked ? 'bi-heart-fill' : 'bi-heart'}" 
-									th:onclick="'toggleLike(this, ' + ${feed.feedId} + ')'" >
-								</i>
-							</div>
-							<div class="likes" th:text="'좋아요 ' + ${feed.likeAmount} + '개'">
-							</div>
-						</div>
-						<div class="feed-caption">
-							<span class="username" th:text="${feed.member.userNickname}"></span>
-							<span class="caption-text" th:text="${feed.feedContent}"></span>
-							<span class="read-more" onclick="toggleCaption(this)">더보기</span>
-						</div>
-						
-						<div class="comments-view">
-							<span class="view-comments" onclick="showComments(this)">댓글 n개 보기</span>
-							<div class="comments-list">
-								댓글 내용은 여기에서 동적으로 추가됩니다. 
-							</div>
-						</div>
-						
-						<div class="comment-input">
-							<input type="text" placeholder="댓글 달기..." />
-							<button>게시</button>
-						</div>
-					</div>
-				</div>
-				-->
-				<div class="feed">
+			<div th:each="feed : ${feeds}">
+				<!-- 피드 전체를 감싸는 div에 data-feed-id 추가 -->
+				<div class="feeds-container" th:data-feed-id="${feed.feedId}">
 					<!--  게시물 상단 - 사용자 정보 -->
 					<div class="feed-header">
-						<img src="/images/logo/2.png" alt="프로필 사진" class="profile-img">
-						<span class="username">cwbt_geunwon</span>
+						<img th:src="@{/images/profile/{img}(img=${feed.member.userImg})}" alt="프로필 사진" class="profile-img">
+						<span class="username" th:text="${feed.member.userNickname}"></span>
 					</div>
 					<!-- 게시물 이미지 -->
 					<div class="feed-image">
-						<img src="/images/logo/1.png" alt="게시물 사진">
+						<img th:src="@{/images/feeds/{img}(img=${feed.feedImage.imgName})}" alt="게시물 사진">
 					</div>
 					<!-- 게시물 하단 - 좋아요 및 댓글 -->
 					<div class="feed-footer">
@@ -77,20 +33,27 @@
 							<div class="feed-actions">
 								<i class="bi bi-heart"></i>
 							</div>
-							<div class="likes">
-								좋아요 50개
+							<div class="likes" th:text="'좋아요 ' + ${feed.likeAmount} + '개'">
 							</div>
 						</div>
 						<div class="feed-caption">
-							<span class="username">cwbt_geunwon</span>
-							<span class="caption-text" data-full-text="아하... 운전 똑바로해!!!!!!!!!!!!!!!!!!!!!">아하...  운전 똑바로해</span>
-							<span class="read-more" onclick="toggleCaption(this)">더보기</span>
+							<span class="username" th:text="${feed.member.userNickname}"></span>
+							<span class="caption-text" th:attr="data-full-text=${feed.feedContent}" 
+									th:text="${#strings.abbreviate(feed.feedContent, 15)}"></span>
+							<span class="read-more"  th:if="${feed.feedContent.length() > 15}"  
+									onclick="toggleCaption(this)">더보기</span>
 						</div>
 						<!-- 댓글 n개 보기 -->
 						<div class="comments-view">
-							<span class="view-comments" onclick="showComments(this)">댓글 n개 보기</span>
+							<span class="view-comments" onclick="showComments(this)"
+								th:text="'댓글 ' + ${feed.comments.size()} + '개'">
+							</span>
 							<div class="comments-list">
-								댓글 내용은 여기에서 동적으로 추가됩니다. 
+								<!-- 댓글 리스트 출력-->
+								<div class="comment-item" th:each="comment : ${feed.comments}">
+									<strong th:text="${comment.member.userNickname}"></strong>: 
+									<span th:text="${comment.commentContent}"></span>
+								</div>
 							</div>
 						</div>
 						<!-- 댓글 입력 -->
@@ -99,8 +62,8 @@
 							<button>게시</button>
 						</div>
 					</div>
-				</div>	
-			</div>
+				</div>
+			</div>	
 		</section>
 		<!-- 오른쪽 계정 및 친구-->
 		<section class="right">
@@ -131,7 +94,6 @@
 						<span class="user-description">가방 전문 쇼핑몰</span>
 					</div>
 				</div>
-				<!-- 추가로 추천 계정을 원하는 만큼 추가 가능 -->
 			</div>	
 		</section>
 	</div>

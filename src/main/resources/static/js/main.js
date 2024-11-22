@@ -1,91 +1,62 @@
-// 더미 유저 계정 데이터
-const users = [
-    { username: "user1", comment: "아주 멋진 게시물이에요!" },
-    { username: "user2", comment: "정말 유익한 정보네요." },
-    { username: "user3", comment: "좋은 게시물 감사합니다." },
-    { username: "user4", comment: "저도 한번 해볼게요!" },
-    { username: "user5", comment: "완전 좋아요!" },
-    { username: "user6", comment: "좋은 게시물 감사합니다." },
-    { username: "user7", comment: "저도 한번 해볼게요!" },
-    { username: "user8", comment: "완전 좋아요!" },
-    { username: "user9", comment: "좋은 게시물 감사합니다." },
-    { username: "user10", comment: "저도 한번 해볼게요!" },
-    { username: "user11", comment: "완전 좋아요!" }
-];
-
 // 댓글 펼치기
 function showComments(spanElement) {
     const commentsView = spanElement.closest('.comments-view');
     const commentsList = commentsView.querySelector('.comments-list');
-    const feed = commentsView.closest('.feed');
+    const feed = commentsView.closest('.feeds-container');
+    
+    // feedId를 'feeds-container'의 data-feed-id에서 가져옴
+    const feedId = feed.getAttribute('data-feed-id');
+    console.log(feedId);
 
-    commentsList.innerHTML = ''; // 초기화
+    commentsList.innerHTML = ''; // 댓글 리스트 초기화
 
-    // 더미 데이터로 댓글 항목 생성
-    users.forEach(user => {
-        const commentElement = document.createElement('div');
-        commentElement.className = 'comment-item';
-        commentElement.innerHTML = `<strong>${user.username}</strong>: <span>${user.comment}</span>`;
-        commentsList.appendChild(commentElement);
-    });
+    // 서버에서 댓글을 가져오는 AJAX 요청
+    fetch(`/linksy/comments?feedId=${feedId}`)  // 댓글을 가져올 서버 엔드포인트
+        .then(response => response.json())  // 서버로부터 JSON 응답을 받음
+        .then(comments => {
+            // 댓글 항목 생성
+            comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.className = 'comment-item';
+                commentElement.innerHTML = `<strong>${comment.member.userNickname}</strong>: <span>${comment.commentContent}</span>`;
+                commentsList.appendChild(commentElement);
+            });
 
-    // 댓글 영역을 확장
-    commentsList.classList.toggle('show');
+            // 댓글 영역을 확장
+            commentsList.classList.toggle('show');
 
-    // 버튼 텍스트 변경
-    const isExpanded = commentsList.classList.contains('show');
-    spanElement.innerText = isExpanded ? "댓글 숨기기" : "댓글 n개 보기";
+            // 버튼 텍스트 변경
+            const isExpanded = commentsList.classList.contains('show');
+            spanElement.innerText = isExpanded ? "댓글 숨기기" : `댓글 ${comments.length}개 보기`;
 
-    if (isExpanded) {
-        commentsList.scrollTop = 0; // 스크롤 위치 초기화
-        feed.style.height = `${commentsList.scrollHeight + 150}px`;
+            // 피드 높이 변경하지 않고 댓글 영역만 확장
+            commentsList.style.maxHeight = isExpanded ? `${commentsList.scrollHeight}px` : '0';
 
-    } else {
-        feed.style.height = '';
-    }
-}
-
-function toggleLike(element, feedId) {
-    const isLiked = element.classList.contains("bi-heart-fill");
-    const url = isLiked ? "/linksy/feed/unlike" : "/linksy/feed/like";
-    const userId = "testUser"; // 현재 로그인된 사용자 ID를 가져오세요.
-
-    fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `feedId=${feedId}&userId=${userId}`,
-    })
-        .then(response => response.json())
-        .then(likeAmount => {
-            // 좋아요 상태 업데이트
-            if (isLiked) {
-                element.classList.remove("bi-heart-fill");
-                element.classList.add("bi-heart");
-            } else {
-                element.classList.remove("bi-heart");
-                element.classList.add("bi-heart-fill");
+            if (isExpanded) {
+                commentsList.scrollTop = 0; // 스크롤 초기화
             }
-            // 좋아요 개수 업데이트
-            const likesElement = element.closest(".feed-footer").querySelector(".likes");
-            likesElement.textContent = `좋아요 ${likeAmount}개`;
         })
-        .catch(error => console.error("Error:", error));
+        .catch(error => {
+            console.error('댓글을 가져오는 데 실패했습니다:', error);
+        });
 }
+
 
 // 더보기 기능
 function toggleCaption(readMoreElement) {
     const caption = readMoreElement.previousElementSibling;
     const fullText = caption.getAttribute("data-full-text");
 
-    if (readMoreElement.innerText === "더보기") {
-        caption.innerText = fullText;
-        readMoreElement.innerText = "숨기기";
+    if (fullText.length > 15) {
+        if (readMoreElement.innerText === "더보기") {
+            caption.innerText = fullText;
+            readMoreElement.innerText = "숨기기";
+        } else {
+            const truncatedText = fullText.slice(0, 15) + "...";
+            caption.innerText = truncatedText;
+            readMoreElement.innerText = "더보기";
+        }
     } else {
-        const truncatedText = fullText.slice(0, 30) + "...";
-        caption.innerText = truncatedText;
-        readMoreElement.innerText = "더보기";
+        readMoreElement.style.display = 'none'; // 15글자 이하일 때 버튼 숨기기
     }
 }
-

@@ -20,5 +20,4 @@
         FROM Member
         WHERE user_id = #{userId} AND user_pwd = #{userPwd}
     </select>
-
 </mapper>

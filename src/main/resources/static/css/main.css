@@ -20,12 +20,12 @@
 
 html, body {
     height: 100%;
-    /* margin: 0; */
+    margin: 0;
 }
 
 .main {
     /* border: 1px solid black; */
-    width: 100%; height: 100%;
+    width: 100%; height: 100vh;
     display: flex;
 }
 
@@ -46,8 +46,9 @@ section.center {
     height: 100vh; /* 전체 화면 높이 */
     overflow-y: auto; /* 수직 스크롤 */
     display: flex;
-    justify-content: center; /* 가로 정렬 */
+    justify-content: flex-start; /* 가로 정렬 */
     align-items: center; /* 세로 정렬 */
+    flex-direction: column;
 }
 
 /* 스크롤바의 너비를 줄입니다 */
@@ -75,19 +76,21 @@ section.center::-webkit-scrollbar-thumb:hover {
 /* 모든 게시글을 감싸는 컨테이너 */
 .feeds-container {
     position: relative;
+    margin-bottom: 20px;
+    padding: 15px;
     width: 600px;
-    height: 100%; /* 화면 높이를 채움 */
-    overflow: visible; /* 넘치는 요소 숨김 */
+    /*height: 100%; */
+    display: flex;
+    flex-direction: column;
+    overflow: visible; 
 }
 
 .feed {
-    /*border: 1px solid #dbdbdb;*/
-    position: absolute;
     margin-bottom: 20px; 
     width: 100%;
-    height: 100vh;
-    opacity: 1; /* 요소가 보이도록 설정 */
+    height: auto;
     display: block;
+    position: relative;
 }
 
 .feed-header {
@@ -107,14 +110,12 @@ section.center::-webkit-scrollbar-thumb:hover {
 .username, .likes {
     font-family: 'goorm-sans-bold';
     font-weight: 700;
-    
 }
 
 .feed-image img {
     width: 100%;
     height: auto;
 }
-
 /* 좋아요 및 댓글 창*/
 
 .feed-footer {
@@ -160,11 +161,13 @@ section.center::-webkit-scrollbar-thumb:hover {
 
 .comment-item {
     margin-bottom: 10px;
+    display: flex;
 }
 
 .comment-item strong {
     font-family: 'goorm-sans-bold';
     font-weight: 700;
+    margin-right: 5px;
 }
 
 .comment-item span {
@@ -327,4 +330,3 @@ section.right {
 	border-top: 1px solid #dbdbdb; /* 선의 스타일 */
 	margin: 0;
 }
-

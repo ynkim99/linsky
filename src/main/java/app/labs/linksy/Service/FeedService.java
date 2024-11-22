@@ -14,17 +14,8 @@ public class FeedService {
 	@Autowired
 	private FeedRepository feedRepository;
 	
-	public List<Feed> getAllFeeds() {
-        return feedRepository.getAllFeeds();
+	// 피드 데이터 가져오기
+    public List<Feed> getFeedsWithDetails() {
+        return feedRepository.getFeedsWithDetails();
     }
-	
-	public int likeFeed(int feedId, String userId) {
-	    feedRepository.addLike(feedId, userId);
-	    return feedRepository.getLikeAmount(feedId);
-	}
-
-	public int unlikeFeed(int feedId, String userId) {
-	    feedRepository.removeLike(feedId, userId);
-	    return feedRepository.getLikeAmount(feedId);
-	}
 }

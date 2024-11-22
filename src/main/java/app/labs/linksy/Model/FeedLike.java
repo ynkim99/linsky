@@ -11,3 +11,4 @@ public class FeedLike {
 	private String userId;
 	private int feedId;
 }
+
