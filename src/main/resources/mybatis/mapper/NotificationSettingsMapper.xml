@@ -3,19 +3,37 @@
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="app.labs.linksy.DAO.NotificationSettingsDAO">
+
+	<!-- 알림 설정 조회 -->
 	<select id="getSettings" resultType="app.labs.linksy.Model.NotificationSettings">
-		SELECT *
+		SELECT email_notifications AS emailNotifications,
+			   push_notifications AS pushNotifications,
+			   sms_notifications AS smsNotifications
 		FROM notification_settings
 		WHERE id = #{id}
 	</select>
 
-	<update id="saveSettings">
+	<!-- 알림 설정 저장 또는 업데이트 -->
+	<insert id="saveSettings" parameterType="app.labs.linksy.Model.NotificationSettings">
+		INSERT INTO notification_settings (id, email_notifications, push_notifications, sms_notifications)
+		VALUES (#{id}, #{emailNotifications}, #{pushNotifications}, #{smsNotifications})
+			ON DUPLICATE KEY UPDATE
+								 email_notifications = #{emailNotifications},
+								 push_notifications = #{pushNotifications},
+								 sms_notifications = #{smsNotifications};
+	</insert>
+
+	<!-- 특정 알림 설정 업데이트 -->
+	<update id="updateSetting">
 		UPDATE notification_settings
-		SET email_notifications = #{emailNotifications},
-			push_notifications = #{pushNotifications},
-			sms_notifications = #{smsNotifications}
+		SET ${key} = #{value}
 		WHERE id = #{id}
 	</update>
 
+	<!-- 알림 설정 삭제 -->
+	<delete id="deleteSettings">
+		DELETE FROM notification_settings
+		WHERE id = #{id}
+	</delete>
 
 </mapper>

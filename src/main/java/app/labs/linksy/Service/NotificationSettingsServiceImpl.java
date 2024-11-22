@@ -20,4 +20,14 @@ public class NotificationSettingsServiceImpl implements NotificationSettingsServ
     public void saveSettings(NotificationSettings settings) {
         notificationSettingsDAO.saveSettings(settings);
     }
+
+    @Override
+    public void updateSetting(String id, String key, boolean value) {
+        notificationSettingsDAO.updateSetting(id, key, value);
+    }
+
+    @Override
+    public void deleteSettings(String id) {
+        notificationSettingsDAO.deleteSettings(id);
+    }
 }
