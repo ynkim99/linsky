@@ -71,4 +71,6 @@ public interface FeedCreateMapper {
     @Select("SELECT * FROM FEED WHERE FEED_ID = #{feedId}")
     Feed getFeedById(@Param("feedId") int feedId);
 
+
+
 }

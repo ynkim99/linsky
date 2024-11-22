@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -160,21 +161,42 @@ public class FeedCreateController {
         return "feed-modifyordelete"; // feed-modifyordelete.html 파일과 매핑
     }
 
-    // 특정 피드 조회
     @GetMapping("/feed/{feedId}")
     @ResponseBody
-    public Feed getFeedById(@PathVariable("feedId") int feedId) {
-        // feedId에 해당하는 Feed 데이터를 가져옴
+    public Map<String, Object> getFeedByIdWithImages(@PathVariable("feedId") int feedId) {
+        // Feed 데이터 가져오기
         Feed feed = feedCreateService.getFeedById(feedId);
         if (feed == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Feed not found");
         }
-        return feed;
+
+        // Feed에 연결된 이미지 목록 가져오기
+        List<String> feedImages = feedCreateService.getFeedImages(feedId);
+
+        // 응답 데이터를 Map으로 구성
+        Map<String, Object> response = new HashMap<>();
+        response.put("feedId", feed.getFeedId());
+        response.put("userId", feed.getUserId());
+        response.put("feedContent", feed.getFeedContent());
+        response.put("feedTime", feed.getFeedTime());
+        response.put("likeAmount", feed.getLikeAmount());
+        response.put("feedImages", feedImages); // 이미지 목록 추가
+
+        return response;
     }
+
+
 
     // 게시물 수정 성공 페이지 매핑
     @GetMapping("/modifyFeedSuccess")
     public String modifyFeedSuccessPage() {
         return "feed-modify-success"; // feed-modify-success.html 파일과 매핑
     }
+
+    // 게시물 생성 페이지 매핑
+    @GetMapping("/feed/likeslisst")
+    public String likeslistPage() {
+        return "likeslist"; // feed-create.html 파일과 매핑
+    }
+
 }
