@@ -15,4 +15,5 @@ public interface SearchRepository {
     List<Feed> findFeedsByHashtag(@Param("keyword") String keyword);
     Feed getFeedById(@Param("feedId") int feedId);
     String getContentByFeedId(@Param("feedId") int feedId);
+    List<Feed> getFeedsByUserId(@Param("userId") String userId);
 }

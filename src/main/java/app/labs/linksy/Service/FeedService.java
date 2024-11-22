@@ -1,6 +1,7 @@
 package app.labs.linksy.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,4 +28,9 @@ public class FeedService {
 	    feedRepository.removeLike(feedId, userId);
 	    return feedRepository.getLikeAmount(feedId);
 	}
+
+    public List<Map<String, String>> getFeedLikes(int feedId) {
+        return feedRepository.getFeedLikes(feedId);
+    }
+
 }

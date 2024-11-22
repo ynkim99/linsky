@@ -16,13 +16,13 @@
         <!-- 메뉴바 -->
         <div class="menu_bar">
             <div class="menubar_header"></div>
-            <div class="logo_img">
+            <div class="logo_img" onclick="location.href='/linksy'">
                 <img alt="Logo" src="/images/logo/blacklogo.png">
             </div>
             <div class="margin_logo2menu"></div>
             <div class="menu_content_container_list">
                 <div class="menu_content_container">
-                    <a href="/"> 
+                    <a href="/linksy"> 
                         <div class="menu_icon_img">
                             <i class="bi bi-house-door"></i>
                         </div>
@@ -127,7 +127,7 @@
                         <div class="grid" th:if="${hashtagFeeds != null}">
                             <div class="grid-item" th:each="feed : ${hashtagFeeds}" th:onclick="'openFeedPopup(' + ${feed.feedId} + ')'">
                                 <div class="image-container">
-                                    <img th:each="image : ${feed.images}" th:src="@{/uploads/} + ${image.imgName}" alt="Feed Image" class="full-image">
+                                    <img th:each="image : ${feed.feedimages}" th:src="@{/uploads/} + ${image.imgName}" alt="Feed Image" class="full-image">
                                     <div class="overlay">
                                         <span th:text="'Likes: ' + ${feed.likeAmount}">Likes</span>
                                         <span th:text="'Comments: ' + ${feed.commentCount}">Comments</span>
@@ -144,7 +144,7 @@
                         <div class="grid" th:if="${feeds != null}">
                             <div class="grid-item" th:each="feed : ${feeds}" th:onclick="'openFeedPopup(' + ${feed.feedId} + ')'">
                                 <div class="image-container">
-                                    <img th:each="image : ${feed.images}" th:src="@{/uploads/} + ${image.imgName}" alt="Feed Image" class="full-image">
+                                    <img th:each="image : ${feed.feedimages}" th:src="@{/uploads/} + ${image.imgName}" alt="Feed Image" class="full-image">
                                     <div class="overlay">
                                         <span th:text="'Likes: ' + ${feed.likeAmount}">Likes</span>
                                         <span th:text="'Comments: ' + ${feed.commentCount}">Comments</span>
@@ -270,6 +270,7 @@ function activateSecretTab() {
     secretPanel.classList.remove('hidden');
     alert("🎉 축하합니다! 숨겨진 탭이 활성화되었습니다!");
 }
+
 </script>
 
 </html>

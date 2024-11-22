@@ -50,24 +50,31 @@
 
     <resultMap id="feedWithImagesMap" type="app.labs.linksy.Model.Feed">
         <id property="feedId" column="feed_id"/>
-        <result property="userId" column="user_id"/>
+        <result property="userId" column="feed_user_id"/>
         <result property="feedContent" column="feed_content"/>
         <result property="feedTime" column="feed_time"/>
         <result property="likeAmount" column="like_amount"/>
-        <collection property="member" javaType="app.labs.linksy.Model.Member">
-            <id property="userId" column="user_id"/>
+        <association property="member" javaType="app.labs.linksy.Model.Member">
+            <id property="userId" column="member_user_id"/>
             <result property="userName" column="user_name"/>
             <result property="userImg" column="user_img"/>
-        </collection>
-        <collection property="images" javaType="java.util.List" ofType="app.labs.linksy.Model.FeedImage">
+        </association>
+        <collection property="feedimages" javaType="java.util.List" ofType="app.labs.linksy.Model.FeedImage">
             <result property="imgName" column="img_name"/>
         </collection>
     </resultMap>
 
     <select id="getFeedById" resultMap="feedWithImagesMap">
-        SELECT f.feed_id, f.user_id, f.feed_content, f.feed_time, f.like_amount,
-               m.user_name, m.user_img,
-               fi.img_name
+        SELECT 
+            f.feed_id,
+            f.user_id AS feed_user_id,
+            f.feed_content,
+            f.feed_time,
+            f.like_amount,
+            m.user_id AS member_user_id,
+            m.user_name,
+            m.user_img,
+            fi.img_name
         FROM Feed f
         JOIN Member m ON f.user_id = m.user_id
         LEFT JOIN Feed_Image fi ON f.feed_id = fi.feed_id
@@ -103,4 +110,24 @@
         FROM Feed
         WHERE feed_id = #{feedId}
     </select>
+
+    <!-- 회원 피드 검색 -->
+    <select id="getFeedsByUserId" resultMap="feedWithImagesMap">
+        SELECT DISTINCT 
+            f.feed_id,
+            f.user_id,
+            CAST(f.feed_content AS VARCHAR2(4000)) as feed_content,
+            f.feed_time,
+            f.like_amount,
+            m.user_name,
+            m.user_img,
+            fi.img_name,
+            (SELECT COUNT(*) FROM Comments c WHERE c.feed_id = f.feed_id) AS comment_count
+        FROM Feed f
+        JOIN Member m ON f.user_id = m.user_id
+        LEFT JOIN Feed_Image fi ON f.feed_id = fi.feed_id
+        WHERE f.user_id = #{userId}
+        ORDER BY f.feed_time DESC
+    </select>
+
 </mapper>

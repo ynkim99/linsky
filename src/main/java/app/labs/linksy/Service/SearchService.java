@@ -1,14 +1,12 @@
 package app.labs.linksy.Service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import app.labs.linksy.DAO.SearchRepository;
 import app.labs.linksy.Model.Feed;
-import app.labs.linksy.Model.Hashtag;
 import app.labs.linksy.Model.Member;
 
 @Service
@@ -39,5 +37,9 @@ public class SearchService {
 
     public String getContentByFeedId(int feedId) {
         return searchrepo.getContentByFeedId(feedId);
+    }
+
+    public List<Feed> getFeedsByUserId(String userId) {
+        return searchrepo.getFeedsByUserId(userId);
     }
 }

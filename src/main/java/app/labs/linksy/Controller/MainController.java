@@ -1,14 +1,18 @@
 package app.labs.linksy.Controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import jakarta.servlet.http.HttpSession;
 
 import app.labs.linksy.Model.Feed;
 import app.labs.linksy.Model.Member;
@@ -27,9 +31,9 @@ public class MainController {
 	
 	// 메인 페이지 호출
 	@GetMapping(value="")
-	public String main(Model model) {
+	public String main(Model model, HttpSession session) {
 		
-		 String userId = "testUser"; // DB에서 가져올 사용자 ID (하드코딩된 값)
+		String userId = (String) session.getAttribute("userId");
 		 System.out.println("Fetching member with userId: " + userId);
 		 
 	     // DB에서 사용자 정보 가져오기
@@ -57,6 +61,12 @@ public class MainController {
     @PostMapping("/unlike")
     public int unlikeFeed(@RequestParam int feedId, @RequestParam String userId) {
         return feedService.unlikeFeed(feedId, userId);
+    }
+
+    @GetMapping("/feed/{feedId}/likes")
+    @ResponseBody
+    public List<Map<String, String>> getFeedLikes(@PathVariable int feedId) {
+        return feedService.getFeedLikes(feedId);
     }
 
 }

@@ -5,7 +5,7 @@
     font-weight: normal;
     font-style: normal;
 }
-<<<<<<< HEAD
+
 body{
 	display: inline-flex;
 	margin: 0px;
@@ -13,7 +13,6 @@ body{
 	border: 0px;
 	min-height: 100vh;
 }
-=======
 
 body {
     display: flex;
@@ -25,13 +24,10 @@ body {
     height: 100%;
 }
 
-
->>>>>>> origin/ynkim2
 .menubar_header{
 	height: 30px;
 }
 .menu_bar{
-<<<<<<< HEAD
 	position: fixed;
 	left: 0px;
 	top: 0px;
@@ -43,9 +39,6 @@ body {
 	overflow: hidden;
 }
 .menu_bar::-webkit-scrollbar {
-  display: none;
-}
-=======
 	display: block;
 	/* height: inherit; */
 	height: 100%;
@@ -53,7 +46,6 @@ body {
 	border-right: solid thin #d9d9d9;
 }
 
->>>>>>> origin/ynkim2
 .logo_img {
 	height: 150px;
 	width: 100%;
@@ -90,16 +82,12 @@ body {
 	text-align: center;
 	margin-top: 12px;
 	margin-left: 7px;
-	
+
+	font-size: x-large;
 	font-family: 'SBAggroB';
-	src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
-<<<<<<< HEAD
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
     font-weight: normal;
-=======
-    font-weight: nomal;
->>>>>>> origin/ynkim2
     font-style: normal;
-    font-size: x-large;
 }
 
 /*.menu_bottom_margin {

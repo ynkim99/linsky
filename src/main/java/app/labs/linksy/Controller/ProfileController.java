@@ -1,6 +1,5 @@
 package app.labs.linksy.Controller;
 
-import app.labs.linksy.Model.Profile;
 import app.labs.linksy.Service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

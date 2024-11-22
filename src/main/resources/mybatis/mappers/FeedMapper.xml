@@ -49,4 +49,12 @@
         WHERE feed_id = #{feedId}
     </select>
     
+    <!-- 좋아요 목록 가져오기 -->
+    <select id="getFeedLikes" resultType="java.util.Map">
+        SELECT m.user_nickname, m.user_img
+        FROM Feed_Like fl
+        JOIN Member m ON fl.user_id = m.user_id
+        WHERE fl.feed_id = #{feedId}
+    </select>
+
 </mapper>

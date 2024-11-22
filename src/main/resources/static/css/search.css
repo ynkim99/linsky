@@ -29,7 +29,7 @@ html, body {
     left: 0;
     bottom: 0;
     width: 300px;
-    background: #e0e0e0;
+    background: white;
     display: block;
     border-right: solid thin #d9d9d9;
     overflow: hidden;
@@ -94,10 +94,11 @@ html, body {
     top: 0;
     right: 0;
     height: 70px;
-    background: #eeeeee;
+    background: white;
     display: flex;
     align-items: center;
     padding: 0px;
+    border-left: solid thin #d9d9d9;
 }
 
 /* 검색 바 */
@@ -153,8 +154,9 @@ html, body {
 .tabs {
     display: flex;
     justify-content: center;
-    background: #f1f1f1;
+    background: white;
     border-bottom: 1px solid #ccc;
+    border-left: solid thin #d9d9d9;
     padding: 10px 0;
 }
 
