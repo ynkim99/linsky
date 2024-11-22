@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Like List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Likes List</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+
   <style>
     @font-face {
       font-family: 'SBAggroB';
@@ -11,119 +13,170 @@
       font-weight: normal;
       font-style: normal;
     }
+
     body {
-      font-family: 'SBAggroB', Arial, sans-serif;
-      background-color: #f0f0f0;
+      font-family: 'SBAggroB', Arial, sans-serif; font-weight: 100;
+      background-color: #f9f9f9;
       display: flex;
-      justify-content: flex-start;
+      justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
-      padding-left: 300px;
     }
+
     #likeListContainer {
       width: 400px;
-      height: 400px;
+      max-height: 500px;
       background-color: #ffffff;
       padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       overflow-y: auto;
-      position: relative;
     }
+
     #header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
     }
+
     #header h1 {
-      font-size: 1.5em;
+      font-size: 1.5rem;
       font-weight: bold;
-      text-align: center;
-      flex-grow: 1;
       margin: 0;
+      color: #333;
     }
+
+    #closeButton {
+      background-color: transparent;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    #closeButton:hover {
+      color: #ff0000;
+    }
+
     .likeItem {
       display: flex;
       align-items: center;
-      margin-bottom: 15px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
     }
+
+    .likeItem:last-child {
+      border-bottom: none;
+    }
+
     .profileImage {
       width: 50px;
       height: 50px;
       border-radius: 50%;
+      object-fit: cover;
       margin-right: 15px;
     }
-    .profileName {
+
+    .userInfo {
       flex: 1;
+      font-size: 1rem;
+      color: #333;
       font-weight: bold;
-      color: #333333;
     }
+
     .followButton {
       padding: 8px 12px;
       background-color: #007bff;
       color: white;
       border: none;
       border-radius: 5px;
+      font-size: 0.9rem;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
+
     .followButton:hover {
       background-color: #0056b3;
+    }
+
+    #likeListContainer::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #likeListContainer::-webkit-scrollbar-thumb {
+      background-color: #cccccc;
+      border-radius: 10px;
+    }
+
+    #likeListContainer::-webkit-scrollbar-track {
+      background-color: #f9f9f9;
     }
   </style>
 </head>
 <body>
 <div id="likeListContainer">
   <div id="header">
-    <h1>좋아요</h1>
+    <h1>Likes</h1>
     <button id="closeButton" onclick="closeLikeList()">&times;</button>
   </div>
-  <div id="likeList"></div> <!-- 좋아요 사용자 목록이 표시될 곳 -->
+
+  <div id="likes-container">
+    <!-- 좋아요를 누른 사용자 목록이 여기에 렌더링됩니다 -->
+  </div>
 </div>
 
 <script>
-  const feedId = 1; // 특정 피드 ID (임시값)
+  // URL에서 feedId 추출
+  const urlParams = new URLSearchParams(window.location.search);
+  const feedId = urlParams.get('feedId');
 
-  fetch(`/api/feed/${feedId}/likes`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error("Failed to fetch profiles");
-            }
-            return response.json();
-          })
+  // API 호출 및 데이터 렌더링
+  fetch(`/api/feed/likes?feedId=${feedId}`)
+          .then(response => response.json())
           .then(data => {
-            const profileList = document.getElementById("profileList");
+            const container = document.getElementById('likes-container');
+            container.innerHTML = ''; // 기존 내용을 초기화
 
-            data.forEach(profile => {
-              const item = document.createElement("div");
-              item.classList.add("profile-item");
+            if (data.length === 0) {
+              container.innerHTML = '<p style="text-align: center; color: #888;">No likes found for this feed.</p>';
+            } else {
+              data.forEach(user => {
+                const likeItem = document.createElement('div');
+                likeItem.classList.add('likeItem');
 
-              // 프로필 이미지
-              const img = document.createElement("img");
-              img.src = profile.userImg || "/images/default.png"; // 기본 이미지 설정
-              item.appendChild(img);
+                const profileImg = document.createElement('img');
+                profileImg.classList.add('profileImage');
+                profileImg.src = user.userImg || 'https://via.placeholder.com/50';
+                profileImg.alt = 'Profile Image';
 
-              // 사용자 ID
-              const userId = document.createElement("div");
-              userId.classList.add("user-id");
-              userId.textContent = profile.userId;
-              item.appendChild(userId);
+                const userInfo = document.createElement('div');
+                userInfo.classList.add('userInfo');
+                userInfo.textContent = user.userId;
 
-              // 팔로우 버튼
-              const followBtn = document.createElement("button");
-              followBtn.classList.add("follow-btn");
-              followBtn.textContent = "Follow";
-              followBtn.onclick = () => alert(`Followed ${profile.userId}`);
-              item.appendChild(followBtn);
+                const followBtn = document.createElement('button');
+                followBtn.classList.add('followButton');
+                followBtn.textContent = 'Follow';
+                followBtn.onclick = () => alert(`Followed ${user.userId}`);
 
-              profileList.appendChild(item);
-            });
+                likeItem.appendChild(profileImg);
+                likeItem.appendChild(userInfo);
+                likeItem.appendChild(followBtn);
+
+                container.appendChild(likeItem);
+              });
+            }
           })
           .catch(error => {
-            console.error("Error fetching profiles:", error);
+            console.error('Error fetching likes:', error);
+            document.getElementById('likes-container').innerHTML =
+                    '<p style="text-align: center; color: red;">Failed to load likes list.</p>';
           });
-</script>
 
+  function closeLikeList() {
+    alert('Close button clicked!');
+  }
+</script>
 </body>
 </html>
