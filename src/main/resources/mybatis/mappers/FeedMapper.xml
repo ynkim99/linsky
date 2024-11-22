@@ -12,11 +12,11 @@
     <result property="feedTime" column="FEED_TIME"/>
     <result property="likeAmount" column="LIKE_AMOUNT"/>
     <association property="member" javaType="app.labs.linksy.Model.Member">
-        <result property="userNickname" column="USERNICKNAME"/>
-        <result property="userImg" column="USERIMG"/>
+        <result property="userNickname" column="USER_NICKNAME"/>
+        <result property="userImg" column="USER_IMG"/>
     </association>
 	<collection property="feedimages" javaType="java.util.List" ofType="app.labs.linksy.Model.FeedImage">
-	        <result property="imgName" column="FEEDIMAGE"/>
+	        <result property="imgName" column="FEED_IMAGE"/>
 	</collection>
 	</resultMap>
 

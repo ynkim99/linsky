@@ -83,77 +83,46 @@
 </div>
 
 <script>
-  function fetchLikesData(feedId) {
-    const url = `/api/feed/likes?feedId=${feedId}`;
+  const feedId = 1; // 특정 피드 ID (임시값)
 
-    fetch(url)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error('Failed to fetch likes data');
-              }
-              return response.json();
-            })
-            .then(data => {
-              renderLikes(data);
-            })
-            .catch(error => {
-              console.error('Error fetching likes data:', error);
-              displayErrorMessage();
+  fetch(`/api/feed/${feedId}/likes`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error("Failed to fetch profiles");
+            }
+            return response.json();
+          })
+          .then(data => {
+            const profileList = document.getElementById("profileList");
+
+            data.forEach(profile => {
+              const item = document.createElement("div");
+              item.classList.add("profile-item");
+
+              // 프로필 이미지
+              const img = document.createElement("img");
+              img.src = profile.userImg || "/images/default.png"; // 기본 이미지 설정
+              item.appendChild(img);
+
+              // 사용자 ID
+              const userId = document.createElement("div");
+              userId.classList.add("user-id");
+              userId.textContent = profile.userId;
+              item.appendChild(userId);
+
+              // 팔로우 버튼
+              const followBtn = document.createElement("button");
+              followBtn.classList.add("follow-btn");
+              followBtn.textContent = "Follow";
+              followBtn.onclick = () => alert(`Followed ${profile.userId}`);
+              item.appendChild(followBtn);
+
+              profileList.appendChild(item);
             });
-  }
-
-  function renderLikes(data) {
-    const likeList = document.getElementById('likeList');
-    likeList.innerHTML = ""; // Clear existing items
-
-    if (data.length === 0) {
-      likeList.innerHTML = "<div>No likes found</div>";
-      return;
-    }
-
-    data.forEach(like => {
-      const likeItem = document.createElement('div');
-      likeItem.classList.add('likeItem');
-
-      const profileImg = document.createElement('img');
-      profileImg.src = like.userImg || "/images/profile/default.png"; // Fallback to default image
-      profileImg.classList.add('profileImage');
-
-      const profileName = document.createElement('div');
-      profileName.textContent = like.userId;
-      profileName.classList.add('profileName');
-
-      const followButton = document.createElement('button');
-      followButton.textContent = "Follow";
-      followButton.classList.add('followButton');
-      followButton.addEventListener('click', () => toggleFollow(followButton));
-
-      likeItem.appendChild(profileImg);
-      likeItem.appendChild(profileName);
-      likeItem.appendChild(followButton);
-      likeList.appendChild(likeItem);
-    });
-  }
-
-  function toggleFollow(button) {
-    button.textContent = button.textContent === "Follow" ? "Following" : "Follow";
-    button.classList.toggle('following');
-  }
-
-  function closeLikeList() {
-    const container = document.getElementById('likeListContainer');
-    container.style.display = "none";
-  }
-
-  function displayErrorMessage() {
-    const likeList = document.getElementById('likeList');
-    likeList.innerHTML = "<div class='error'>Failed to load likes. Please try again.</div>";
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const feedId = 1; // Replace with the actual feed ID
-    fetchLikesData(feedId);
-  });
+          })
+          .catch(error => {
+            console.error("Error fetching profiles:", error);
+          });
 </script>
 
 </body>
