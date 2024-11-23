@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Instagram Style Notification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      padding: 20px;
+    }
+    #notificationContainer {
+      background-color: #ffffff;
+      width: 320px;
+      height: 80vh;
+      padding: 20px;
+      overflow-y: auto;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .notificationItem {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .notificationItem:hover {
+      background-color: #f9f9f9;
+    }
+    .icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+      background-color: #3897f0;
+    }
+    .text {
+      flex: 1;
+      font-size: 14px;
+      color: #333;
+    }
+    .link {
+      font-size: 12px;
+      color: #3897f0;
+      text-decoration: none;
+    }
+    .link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div id="notificationContainer">
+  <h2>알림</h2>
+  <div id="notificationsList">
+    <!-- 알림 목록이 여기에 렌더링됩니다 -->
+  </div>
+</div>
+
+<script>
+  // User ID 설정
+  document.addEventListener("DOMContentLoaded", function () {
+    const userId = "user123"; // 테스트할 사용자 ID
+    const apiUrl = `/api/notifications/${userId}`;
+
+    fetch(apiUrl)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`API 호출 실패: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(data => {
+              const notificationsList = document.getElementById('notificationsList');
+
+              if (data.length === 0) {
+                notificationsList.innerHTML = "<p style='text-align: center; padding: 20px;'>알림이 없습니다.</p>";
+              } else {
+                data.forEach(notification => {
+                  const notificationItem = document.createElement('div');
+                  notificationItem.classList.add('notificationItem');
+
+                  const icon = document.createElement('div');
+                  icon.classList.add('icon');
+                  icon.innerHTML =
+                          notification.notiType === "LIKE" ? "👍" :
+                                  notification.notiType === "COMMENT" ? "💬" :
+                                          notification.notiType === "FOLLOW" ? "➕" : "ℹ️";
+
+                  const text = document.createElement('div');
+                  text.classList.add('text');
+                  text.textContent = notification.content;
+
+                  const link = document.createElement('a');
+                  link.classList.add('link');
+                  link.href = notification.targetUrl;
+                  link.textContent = "더보기";
+
+                  notificationItem.appendChild(icon);
+                  notificationItem.appendChild(text);
+                  notificationItem.appendChild(link);
+
+                  notificationsList.appendChild(notificationItem);
+                });
+              }
+            })
+            .catch(error => {
+              console.error('알림 데이터를 가져오는 중 오류 발생:', error);
+              const notificationsList = document.getElementById('notificationsList');
+              notificationsList.innerHTML = "<p style='text-align: center; padding: 20px; color: red;'>알림 데이터를 가져올 수 없습니다.</p>";
+            });
+  });
+</script>
+</body>
+</html>
