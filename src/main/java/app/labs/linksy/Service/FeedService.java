@@ -15,9 +15,11 @@ public class FeedService {
 	@Autowired
 	private FeedRepository feedRepository;
 	
-	public List<Feed> getAllFeeds() {
-        return feedRepository.getAllFeeds();
+	// 피드 데이터 가져오기
+    public List<Feed> getFeedsWithDetails() {
+        return feedRepository.getFeedsWithDetails();
     }
+<<<<<<< HEAD
 	
 	public int likeFeed(int feedId, String userId) {
 	    feedRepository.addLike(feedId, userId);
@@ -33,4 +35,6 @@ public class FeedService {
         return feedRepository.getFeedLikes(feedId);
     }
 
+=======
+>>>>>>> origin/ynkim9
 }

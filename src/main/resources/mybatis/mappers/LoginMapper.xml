@@ -20,6 +20,7 @@
         FROM Member
         WHERE user_id = #{userId} AND user_pwd = #{userPwd}
     </select>
+<<<<<<< HEAD
 
     <select id="findByUserId" parameterType="String" resultMap="memberResultMap">
         SELECT user_id, user_name, user_nickname, user_pwd, user_email, user_img, user_introduce
@@ -27,4 +28,6 @@
         WHERE user_id = #{userId}
     </select>
 
+=======
+>>>>>>> origin/ynkim9
 </mapper>

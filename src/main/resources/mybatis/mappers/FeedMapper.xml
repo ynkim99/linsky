@@ -3,32 +3,41 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="app.labs.linksy.DAO.FeedRepository">
-
-	<!-- FeedResultMap 정의 -->
-    <resultMap id="FeedResultMap" type="app.labs.linksy.Model.Feed">
-    <result property="feedId" column="FEED_ID"/>
-    <result property="userId" column="USER_ID"/>
-    <result property="feedContent" column="FEED_CONTENT"/>
-    <result property="feedTime" column="FEED_TIME"/>
-    <result property="likeAmount" column="LIKE_AMOUNT"/>
-    <association property="member" javaType="app.labs.linksy.Model.Member">
-        <result property="userNickname" column="USERNICKNAME"/>
-        <result property="userImg" column="USERIMG"/>
-    </association>
-	<collection property="feedimages" javaType="java.util.List" ofType="app.labs.linksy.Model.FeedImage">
-	        <result property="imgName" column="FEEDIMAGE"/>
-	</collection>
+	<resultMap id="feedResultMap" type="app.labs.linksy.Model.Feed">
+	    <id property="feedId" column="feedId"/>
+	    <result property="userId" column="userId"/>
+	    <result property="feedContent" column="feedContent"/>
+	    <result property="feedTime" column="feedTime"/>
+	    <result property="likeAmount" column="likeAmount"/>
+	    
+	    <!-- Member 객체 매핑 -->
+	    <association property="member" javaType="app.labs.linksy.Model.Member">
+	        <result property="userNickname" column="userNickname"/>
+	        <result property="userImg" column="userImg"/>
+	    </association>
+	    
+	    <!-- FeedImage 매핑 -->
+	    <association property="feedImage" javaType="app.labs.linksy.Model.FeedImage">
+	        <result property="imgName" column="imgName"/>
+	    </association>
 	</resultMap>
-
-    <!-- <select id="getAllFeeds" resultType="app.labs.linksy.Model.Feed"> -->
-    <select id="getAllFeeds" resultMap="FeedResultMap">
-        SELECT f.feed_id, f.user_id, f.feed_content, f.feed_time, f.like_amount,
-           m.user_nickname AS userNickname, m.user_img AS userImg, 
-           fi.img_name AS feedImage
-        FROM Feed f
-        JOIN Member m ON f.user_id = m.user_id
-        JOIN Feed_Image fi ON f.feed_id = fi.feed_id
+	
+	<!-- 피드와 관련된 데이터 조회 -->
+    <select id="getFeedsWithDetails" resultMap="feedResultMap">
+        SELECT 
+            f.feed_id AS feedId, 
+            f.user_id AS userId, 
+            f.feed_content AS feedContent, 
+            f.feed_time AS feedTime, 
+            f.like_amount AS likeAmount, 
+            m.user_nickname AS userNickname,  
+            m.user_img AS userImg,
+            i.img_name AS imgName  
+        FROM FEED f
+        JOIN MEMBER m ON f.user_id = m.user_id
+        LEFT JOIN FEED_IMAGE i ON f.feed_id = i.feed_id
     </select>
+<<<<<<< HEAD
     
     <!-- 좋아요 추가 -->
     <insert id="addLike">
@@ -57,4 +66,6 @@
         WHERE fl.feed_id = #{feedId}
     </select>
 
+=======
+>>>>>>> origin/ynkim9
 </mapper>

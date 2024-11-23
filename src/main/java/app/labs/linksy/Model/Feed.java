@@ -7,15 +7,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString
 public class Feed {
-	int feedId;
-	String userId;
-	String feedContent;
-	Timestamp feedTime;
-	int likeAmount;
-	Member member;
-	List<FeedImage> feedimages;
-	List<Comment> comments;
-	int commentCount;
+	private int feedId;
+	private String userId;
+	private String feedContent;
+	private Timestamp feedTime;
+	private int likeAmount;
+	
+	private Member member;  // Member 객체를 참조
+    private FeedImage feedImage; // FeedImage 객체를 참조
+    private List<Comment> comments; // 댓글 리스트 추가
 }

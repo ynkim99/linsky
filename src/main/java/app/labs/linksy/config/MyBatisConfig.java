@@ -1,4 +1,4 @@
-package app.labs.linksy.config;
+package app.labs.linksy.Config;
 
 //import org.mybatis.spring.annotation.MapperScan;
 //import org.springframework.context.annotation.Configuration;

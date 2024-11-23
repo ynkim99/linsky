@@ -8,10 +8,13 @@ import lombok.ToString;
 
 @Getter @Setter @ToString
 public class Comment {
-	int commentId;
-	String userId;
-	int feedId;
-	String commentContent;
-	int parentId;
-	Timestamp commentTime;
+	private int commentId;
+	private String userId;
+	private int feedId;
+	private String commentContent;
+	private int parentId;
+	private Timestamp commentTime;
+	
+	private Member member;
+	
 }
