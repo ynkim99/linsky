@@ -49,6 +49,12 @@ dependencies {
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    //extra
+    implementation 'javax.servlet:javax.servlet-api:4.0.1' // 버전은 최신 버전 사용 권장
+
+    //websocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 }
 
 tasks.named('test') {

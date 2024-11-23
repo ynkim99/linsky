@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Instagram Style Notification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      padding: 20px;
+    }
+    #notificationContainer {
+      background-color: #ffffff;
+      width: 320px;
+      height: 80vh;
+      padding: 20px;
+      overflow-y: auto;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .notificationItem {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .notificationItem:hover {
+      background-color: #f9f9f9;
+    }
+    .profileImage {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+      background-color: #3897f0;
+    }
+    .notificationText {
+      flex: 1;
+      font-size: 14px;
+      color: #333;
+    }
+    #buttonsContainer {
+      margin-top: 20px;
+    }
+    #buttonsContainer button {
+      padding: 10px;
+      margin-right: 10px;
+      background-color: #3897f0;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #buttonsContainer button:hover {
+      background-color: #287bc5;
+    }
+  </style>
+</head>
+<body>
+<div id="notificationContainer">
+  <h2>알림</h2>
+</div>
+<div id="buttonsContainer">
+  <button onclick="sendNotification('user123', 'LIKE', 'http://example.com/post/1')">
+    👍
+  </button>
+  <button onclick="sendNotification('user123', 'COMMENT', 'http://example.com/post/1')">
+    💬
+  </button>
+  <button onclick="sendNotification('user123', 'FOLLOW', 'http://example.com/user/456')">
+    ➕
+  </button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+
+  // User ID 설정
+  const userId = "user123";
+
+  // 알림 데이터 가져오기
+  fetch(`/api/notifications/${userId}`)
+          .then(response => response.json())
+          .then(data => {
+            const container = document.getElementById('notifications');
+            if (data.length === 0) {
+              container.innerHTML = '<p>No notifications.</p>';
+            } else {
+              data.forEach(notification => {
+                const notiElement = document.createElement('div');
+                notiElement.classList.add('notification');
+
+                const profileImage = document.createElement('div');
+                profileImage.classList.add('profileImage');
+                profileImage.textContent = notification.notiType === "LIKE" ? "👍" :
+                        notification.notiType === "COMMENT" ? "💬" : "➕";
+
+                const content = document.createElement('div');
+                content.classList.add('content');
+                content.innerHTML = `<strong>${notification.content}</strong>`;
+
+                notiElement.appendChild(profileImage);
+                notiElement.appendChild(content);
+
+                notiElement.onclick = () => {
+                  window.location.href = notification.targetUrl;
+                };
+
+                container.appendChild(notiElement);
+              });
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching notifications:', error);
+            document.getElementById('notifications').innerHTML = '<p>Error loading notifications.</p>';
+          });
+</script>
+</body>
+</html>

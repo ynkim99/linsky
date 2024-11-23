@@ -5,11 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
-
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+
 
 @Slf4j
 @Configuration
@@ -27,12 +27,30 @@ public class WebConfig implements WebMvcConfigurer {
         log.info("Upload path: {}", uploadDir.getAbsolutePath());
     }
     
+    //@Override
+    //public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    //    registry.addResourceHandler("/uploads/**")
+    //            //.addResourceLocations("file:///" + uploadPath + "/")
+    //            .addResourceLocations("file:///C:/Users/quien/Desktop/uploads/")
+    //            .setCachePeriod(3600)
+    //            .resourceChain(true)
+    //            .addResolver(new PathResourceResolver());
+    //}
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String fullUploadPath = "file:///" + uploadPath + "/";
+        log.info("Adding resource handler for images: {}", fullUploadPath);
+
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:///" + uploadPath + "/")
+                .addResourceLocations(fullUploadPath)
                 .setCachePeriod(3600)
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
     }
+
+
+
+
+
 }
