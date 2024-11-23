@@ -59,7 +59,7 @@
             <result property="userName" column="user_name"/>
             <result property="userImg" column="user_img"/>
         </association>
-        <collection property="feedimages" javaType="java.util.List" ofType="app.labs.linksy.Model.FeedImage">
+        <collection property="feedImages" ofType="app.labs.linksy.Model.FeedImage">
             <result property="imgName" column="img_name"/>
         </collection>
     </resultMap>
@@ -105,6 +105,7 @@
         JOIN Member m ON c.user_id = m.user_id
         WHERE f.feed_id = #{feedId}
     </select>
+    
     <select id="getContentByFeedId">
         SELECT feed_content
         FROM Feed

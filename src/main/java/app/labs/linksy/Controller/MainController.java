@@ -43,7 +43,7 @@ public class MainController {
 		
 		String userId = (String) session.getAttribute("userId");
 		 System.out.println("Fetching member with userId: " + userId);
-		 String userId = "testUser"; // DB에서 가져올 사용자 ID (하드코딩된 값)
+		 //String userId = "testUser"; // DB에서 가져올 사용자 ID (하드코딩된 값)
 		 
 	     // DB에서 사용자 정보 가져오기
 	     Member member = memberService.getMemberByUserId(userId);

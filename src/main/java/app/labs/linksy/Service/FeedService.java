@@ -19,7 +19,6 @@ public class FeedService {
     public List<Feed> getFeedsWithDetails() {
         return feedRepository.getFeedsWithDetails();
     }
-<<<<<<< HEAD
 	
 	public int likeFeed(int feedId, String userId) {
 	    feedRepository.addLike(feedId, userId);
@@ -34,7 +33,4 @@ public class FeedService {
     public List<Map<String, String>> getFeedLikes(int feedId) {
         return feedRepository.getFeedLikes(feedId);
     }
-
-=======
->>>>>>> origin/ynkim9
 }

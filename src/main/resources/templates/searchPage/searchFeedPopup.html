@@ -8,7 +8,9 @@
             <div class="popup-container">
                 <!-- 왼쪽 이미지 섹션 -->
                 <div class="feed-image-section">
-                    <img th:src="@{/uploads/} + ${feed.feedimages[0].imgName}" alt="Feed Image" class="feed-image">
+                    <div th:each="image : ${feed.feedImages}" class="feed-image-item">
+                        <img th:src="@{/uploads/} + ${image.imgName}" alt="Feed Image">
+                    </div>
                 </div> 
                 
                 <!-- 오른쪽 콘텐츠 섹션 -->

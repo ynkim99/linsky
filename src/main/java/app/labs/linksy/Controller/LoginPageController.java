@@ -12,6 +12,7 @@ import app.labs.linksy.Service.LoginService;
 @Controller
 public class LoginPageController {
 	
+	
 	@Autowired
 	private LoginService loginService;
 	
@@ -28,12 +29,12 @@ public class LoginPageController {
             boolean isValid = loginService.validateLogin(userId, password);
             if (isValid) {
                 session.setAttribute("userId", userId);
+                session.setAttribute("isLoggedIn", true);
                 return "redirect:/linksy";
-            } else {
-                return "redirect:/login?error=true";
             }
+            return "redirect:/login?error=invalid";
         } catch (Exception e) {
-            return "redirect:/login?error=true";
+            return "redirect:/login?error=system";
         }
     }
 
