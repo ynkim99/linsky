@@ -14,8 +14,6 @@ import java.util.Map;
 @RequestMapping("/settings")
 public class ProfileController {
 
-    @Autowired
-    private ProfileService profileService;
 
     @PostMapping("/save-nickname")
     public ResponseEntity<String> saveNickname(@RequestBody Map<String, String> request) {
