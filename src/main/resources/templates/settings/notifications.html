@@ -26,7 +26,7 @@
     <!-- Main Content -->
     <div class="main-content">
         <h1>알림 설정</h1>
-        <form class="notifications-form">
+        <form id="notificationsForm" class="notifications-form">
             <div class="form-group">
                 <label for="emailNotifications">이메일 알림</label>
                 <label class="toggle">
@@ -48,7 +48,7 @@
                     <span class="slider"></span>
                 </label>
             </div>
-            <button type="submit">저장</button>
+            <button type="button" onclick="saveNotificationSettings()">저장</button>
         </form>
     </div>
 
@@ -58,7 +58,34 @@
     </div>
 </div>
 <script>
-    // 기존 JavaScript 코드
+    function saveNotificationSettings() {
+        const settingsData = {
+            id: "userId",
+            emailNotifications: document.getElementById("emailNotifications").checked,
+            pushNotifications: document.getElementById("pushNotifications").checked,
+            smsNotifications: document.getElementById("smsNotifications").checked,
+        };
+
+        fetch("/settings/notifications", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(settingsData)
+        })
+            .then(response => {
+                console.log("Response Status:", response.status); // 상태 코드 출력
+                return response.text(); // 응답 데이터 처리
+            })
+            .then(data => {
+                console.log("Response Data:", data); // 응답 메시지 출력
+                alert(data); // 알림 표시
+            })
+            .catch(error => {
+                console.error("Error occurred:", error); // 오류 출력
+            });
+    }
+
 </script>
 </body>
 </html>
