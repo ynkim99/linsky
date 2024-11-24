@@ -21,7 +21,7 @@ public class Feed {
 	private int likeAmount;
 	
 	private Member member;  // Member 객체를 참조
-    private FeedImage feedImages; // FeedImage 객체를 참조
+	private FeedImage feedImages;  // FeedImage 객체를 참조
     private List<Comment> comments; // 댓글 리스트 추가
 	private int commentCount;
 }

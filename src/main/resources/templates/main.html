@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 	<meta charset="UTF-8">
 	<title>Linksy</title>
@@ -10,107 +10,118 @@
 	<link rel="stylesheet" href="/css/menubar.css">
 </head>
 <body>
-	<div class="main">
-		<!-- 메뉴 바-->
-		<section class="left" th:replace="~{menu_bar :: menu_bar}">
-		</section>
-		<section class="center">
-			<div th:each="feed : ${feeds}">
-				<!-- 피드 전체를 감싸는 div에 data-feed-id 추가 -->
-				<div class="feeds-container" th:data-feed-id="${feed.feedId}">
-					<!--  게시물 상단 - 사용자 정보 -->
-					<div class="feed-header">
-						<img th:src="@{/images/profile/{img}(img=${feed.member.userImg})}" alt="프로필 사진" class="profile-img">
-						<span class="username" th:text="${feed.member.userNickname}"></span>
+<div class="main">
+	<!-- 메뉴 바 -->
+	<section class="left" th:replace="~{menu_bar :: menu_bar}">
+	</section>
+
+	<section class="center">
+		<div th:each="feed : ${feeds}">
+			<!-- 피드 전체를 감싸는 div에 data-feed-id 추가 -->
+			<div class="feeds-container" th:data-feed-id="${feed.feedId}">
+				<!-- 게시물 상단 - 사용자 정보 -->
+				<div class="feed-header">
+					<img th:src="@{(${feed.feedImages != null and !feed.feedImages.isEmpty()} ? '/path/to/images/' + feed.feedImages[0].imgName : '/path/to/images/default.png')}"
+						 alt="프로필 사진" class="profile-img">
+					<span class="username" th:text="${feed.member?.userNickname ?: '익명'}"></span>
+				</div>
+
+				<!-- 게시물 이미지 -->
+				<div class="feed-image">
+					<img th:src="@{(${feed.feedImages != null and !feed.feedImages.isEmpty()} ? '/images/feeds/' + feed.feedImages[0].imgName : '/images/feeds/default.png')}"
+						 alt="게시물 사진">
+				</div>
+
+				<!-- 게시물 하단 - 좋아요 및 댓글 -->
+				<div class="feed-footer">
+					<div class="feed-actions-likes">
+						<div class="feed-actions">
+							<i class="bi bi-heart"></i>
+						</div>
+						<div class="likes" th:text="'좋아요 ' + ${feed.likeAmount ?: 0} + '개'"></div>
 					</div>
-					<!-- 게시물 이미지 -->
-					<div class="feed-image">
-						<img th:src="@{/images/feeds/{img}(img=${feed.feedImage.imgName})}" alt="게시물 사진">
+
+					<div class="feed-caption">
+						<span class="username" th:text="${feed.member?.userNickname ?: '익명'}"></span>
+						<span class="caption-text"
+							  th:attr="data-full-text=${feed.feedContent}"
+							  th:text="${feed.feedContent?.length() > 15 ? #strings.abbreviate(feed.feedContent, 15) : feed.feedContent}"></span>
+						<span class="read-more" th:if="${feed.feedContent?.length() > 15}"
+							  onclick="toggleCaption(this)">더보기</span>
 					</div>
-					<!-- 게시물 하단 - 좋아요 및 댓글 -->
-					<div class="feed-footer">
-						<div class="feed-actions-likes">
-							<div class="feed-actions">
-								<i class="bi bi-heart"></i>
-							</div>
-							<div class="likes" th:onclick="'showLikesPopup(1)'">
-								좋아요 50개
-							<div class="likes" th:text="'좋아요 ' + ${feed.likeAmount} + '개'">
-							</div>
-						</div>
-						<div class="feed-caption">
-							<span class="username" th:text="${feed.member.userNickname}"></span>
-							<span class="caption-text" th:attr="data-full-text=${feed.feedContent}" 
-									th:text="${#strings.abbreviate(feed.feedContent, 15)}"></span>
-							<span class="read-more"  th:if="${feed.feedContent.length() > 15}"  
-									onclick="toggleCaption(this)">더보기</span>
-						</div>
-						<!-- 댓글 n개 보기 -->
-						<div class="comments-view">
-							<span class="view-comments" onclick="showComments(this)"
-								th:text="'댓글 ' + ${feed.comments.size()} + '개'">
-							</span>
-							<div class="comments-list">
-								<!-- 댓글 리스트 출력-->
-								<div class="comment-item" th:each="comment : ${feed.comments}">
-									<strong th:text="${comment.member.userNickname}"></strong>: 
-									<span th:text="${comment.commentContent}"></span>
-								</div>
+
+					<!-- 댓글 n개 보기 -->
+					<div class="comments-view">
+                            <span class="view-comments"
+								  onclick="showComments(this)"
+								  th:text="'댓글 ' + (${feed.comments != null ? feed.comments.size() : 0}) + '개'"></span>
+						<div class="comments-list">
+							<!-- 댓글 리스트 출력 -->
+							<div class="comment-item" th:each="comment : ${feed.comments}">
+								<strong th:text="${comment.member?.userNickname ?: '익명'}"></strong>:
+								<span th:text="${comment.commentContent}"></span>
 							</div>
 						</div>
-						<!-- 댓글 입력 -->
-						<div class="comment-input">
-							<input type="text" placeholder="댓글 달기..." />
-							<button>게시</button>
-						</div>
+					</div>
+
+					<!-- 댓글 입력 -->
+					<div class="comment-input">
+						<input type="text" placeholder="댓글 달기..." />
+						<button>게시</button>
 					</div>
 				</div>
-			</div>	
-		</section>
-		<!-- 오른쪽 계정 및 친구-->
-		<section class="right">
-			<div class="user-profile">
-				<img th:src="@{/images/profile/} + ${member?.userImg}" alt="프로필 사진" class="my-profile">
-			    <div class="user-info"> 
-			        <span class="my-username" th:text="${member?.userNickname}"></span>
-			        <span class="my-user-description" th:text="${member?.userIntroduce}"></span>
-			    </div>
-			</div>
-			<!-- 친구 섹션 제목 -->
-			<div class="friends-title">
-				<span>친구</span>
-				<hr />
-			</div>
-			<div class="friends">
-				<div class="friend">
-					<img src="/images/logo/1.png" alt="친구 사진" class="profile-img">
-					<div class="user-info">
-						<span class="username">make_it_work</span>
-						<span class="user-description">Instagram 신규 사용자</span>
-					</div>
-				</div>
-				<div class="friend">
-					<img src="/images/logo/1.png" alt="친구 사진" class="profile-img">
-					<div class="user-info">
-						<span class="username">dkc_mall</span>
-						<span class="user-description">가방 전문 쇼핑몰</span>
-					</div>
-				</div>
-			</div>	
-		</section>
-	</div>
-	<!-- 좋아요 팝업 -->
-	<div id="likesPopup" class="popup">
-		<div class="popup-content">
-			<div class="popup-header">
-				<h3>좋아요</h3>
-				<span class="close-popup" onclick="closeLikesPopup()">&times;</span>
-			</div>
-			<div class="likes-list">
-				<!-- 좋아요 목록이 동적으로 추가됨 -->
 			</div>
 		</div>
+	</section>
+
+	<!-- 오른쪽 계정 및 친구 -->
+	<section class="right">
+		<div class="user-profile">
+			<img th:src="@{/images/profile/{img}(img=${member?.userImg ?: 'default.png'})}" alt="프로필 이미지">
+
+			alt="프로필 사진" class="my-profile">
+			<div class="user-info">
+				<span class="my-username" th:text="${member?.userNickname ?: '내 사용자 닉네임'}"></span>
+				<span class="my-user-description" th:text="${member?.userIntroduce ?: '내 소개'}"></span>
+			</div>
+		</div>
+
+		<!-- 친구 섹션 제목 -->
+		<div class="friends-title">
+			<span>친구</span>
+			<hr />
+		</div>
+		<div class="friends">
+			<div class="friend">
+				<img src="/images/logo/1.png" alt="친구 사진" class="profile-img">
+				<div class="user-info">
+					<span class="username">make_it_work</span>
+					<span class="user-description">Instagram 신규 사용자</span>
+				</div>
+			</div>
+			<div class="friend">
+				<img src="/images/logo/1.png" alt="친구 사진" class="profile-img">
+				<div class="user-info">
+					<span class="username">dkc_mall</span>
+					<span class="user-description">가방 전문 쇼핑몰</span>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+
+<!-- 좋아요 팝업 -->
+<div id="likesPopup" class="popup">
+	<div class="popup-content">
+		<div class="popup-header">
+			<h3>좋아요</h3>
+			<span class="close-popup" onclick="closeLikesPopup()">&times;</span>
+		</div>
+		<div class="likes-list">
+			<!-- 좋아요 목록이 동적으로 추가됨 -->
+		</div>
 	</div>
+</div>
 </body>
 <script src="/js/main.js"></script>
 </html>
