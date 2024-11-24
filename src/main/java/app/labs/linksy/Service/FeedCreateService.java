@@ -133,7 +133,10 @@ public class FeedCreateService {
         }
     }
 
-
+    public boolean updateFeedContent(int feedId, String feedContent) {
+        int updatedRows = feedCreateMapper.updateFeedContent(feedId, feedContent);
+        return updatedRows > 0; // 업데이트된 행이 1개 이상인지 확인
+    }
 
     public Set<String> extractHashtags(String content) {
         Set<String> hashtags = new HashSet<>();

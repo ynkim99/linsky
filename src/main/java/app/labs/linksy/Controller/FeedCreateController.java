@@ -7,6 +7,7 @@ import app.labs.linksy.Util.HashtagExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -185,7 +186,19 @@ public class FeedCreateController {
         return response;
     }
 
-
+    @PostMapping("/feed/edit/{feedId}")
+    public ResponseEntity<String> editFeed(
+            @PathVariable("feedId") int feedId,
+            @RequestBody Map<String, String> payload) {
+        String feedContent = payload.get("feedContent");
+        boolean success = feedCreateService.updateFeedContent(feedId, feedContent);
+        if (success) {
+            return ResponseEntity.ok("Feed updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to update feed");
+        }
+    }
 
     // 게시물 수정 성공 페이지 매핑
     @GetMapping("/modifyFeedSuccess")

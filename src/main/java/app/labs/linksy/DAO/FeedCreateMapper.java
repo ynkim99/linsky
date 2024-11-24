@@ -65,6 +65,9 @@ public interface FeedCreateMapper {
     Feed findFeedById(int feedId);
 
 
+    @Update("UPDATE FEED SET FEED_CONTENT = #{feedContent} WHERE FEED_ID = #{feedId}")
+    int updateFeedContent(@Param("feedId") int feedId, @Param("feedContent") String feedContent);
+
     @Select("SELECT IMG_NAME FROM FEED_IMAGE WHERE FEED_ID = #{feedId}")
     List<String> getImagesByFeedId(int feedId);
 
