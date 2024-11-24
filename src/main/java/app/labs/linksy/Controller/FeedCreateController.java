@@ -62,53 +62,53 @@ public class FeedCreateController {
     }
 
     // 게시물 생성 처리
-    @PostMapping("/feed/create")
-    public String createFeed(@RequestParam(value = "userId", required = false) String userId,
-                             @RequestParam("feedContent") String feedContent,
-                             @RequestParam("images") List<MultipartFile> imageFiles) {
-        logger.info("Received request to create feed for user: " + (userId != null ? userId : "anonymous"));
-
-        if (userId == null || !userService.existsByUserId(userId)) {
-            logger.warning("User ID does not exist, using default 'anonymous'");
-            userId = "anonymous";
-            userService.createAnonymousUserIfNotExist();
-        }
-
-        try {
-            List<String> hashtags = HashtagExtractor.extractHashtags(feedContent);
-            logger.info("Extracted hashtags: " + hashtags);
-
-            List<String> imageNames = new ArrayList<>();
-            for (MultipartFile imageFile : imageFiles) {
-                if (!imageFile.isEmpty()) {
-                    String filePath = uploadDir + File.separator + imageFile.getOriginalFilename();
-                    File destFile = new File(filePath);
-                    imageFile.transferTo(destFile);
-                    imageNames.add(imageFile.getOriginalFilename());
-                    logger.info("Saved image: " + imageFile.getOriginalFilename() + " at " + filePath);
-                }
-            }
-
-            Feed feed = new Feed();
-            feed.setUserId(userId);
-            feed.setFeedContent(feedContent);
-            feed.setLikeAmount(0);
-
-            feedCreateService.createFeed(feed, hashtags, imageNames);
-            logger.info("Feed successfully created for user: " + userId);
-
-            return "redirect:/createFeedSuccess";
-
-        } catch (IOException e) {
-            logger.severe("Error occurred while creating feed: " + e.getMessage());
-            e.printStackTrace();
-            return "redirect:/error";
-        } catch (Exception e) {
-            logger.severe("Unexpected error occurred: " + e.getMessage());
-            e.printStackTrace();
-            return "redirect:/error";
-        }
-    }
+    //@PostMapping("/feed/create")
+    //public String createFeed(@RequestParam(value = "userId", required = false) String userId,
+    //                         @RequestParam("feedContent") String feedContent,
+    //                         @RequestParam("images") List<MultipartFile> imageFiles) {
+    //    logger.info("Received request to create feed for user: " + (userId != null ? userId : "anonymous"));
+//
+    //    if (userId == null || !userService.existsByUserId(userId)) {
+    //        logger.warning("User ID does not exist, using default 'anonymous'");
+    //        userId = "anonymous";
+    //        userService.createAnonymousUserIfNotExist();
+    //    }
+//
+    //    try {
+    //        List<String> hashtags = HashtagExtractor.extractHashtags(feedContent);
+    //        logger.info("Extracted hashtags: " + hashtags);
+//
+    //        List<String> imageNames = new ArrayList<>();
+    //        for (MultipartFile imageFile : imageFiles) {
+    //            if (!imageFile.isEmpty()) {
+    //                String filePath = uploadDir + File.separator + imageFile.getOriginalFilename();
+    //                File destFile = new File(filePath);
+    //                imageFile.transferTo(destFile);
+    //                imageNames.add(imageFile.getOriginalFilename());
+    //                logger.info("Saved image: " + imageFile.getOriginalFilename() + " at " + filePath);
+    //            }
+    //        }
+//
+    //        Feed feed = new Feed();
+    //        feed.setUserId(userId);
+    //        feed.setFeedContent(feedContent);
+    //        feed.setLikeAmount(0);
+//
+    //        feedCreateService.createFeed(feed, hashtags, imageNames);
+    //        logger.info("Feed successfully created for user: " + userId);
+//
+    //        return "redirect:/createFeedSuccess";
+//
+    //    } catch (IOException e) {
+    //        logger.severe("Error occurred while creating feed: " + e.getMessage());
+    //        e.printStackTrace();
+    //        return "redirect:/error";
+    //    } catch (Exception e) {
+    //        logger.severe("Unexpected error occurred: " + e.getMessage());
+    //        e.printStackTrace();
+    //        return "redirect:/error";
+    //    }
+    //}
 
     // 게시물 수정 처리
     @PutMapping("/feed/edit/{feedId}")
@@ -200,10 +200,69 @@ public class FeedCreateController {
         }
     }
 
+    @PostMapping("/feed/create")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> createFeed(
+            @RequestParam(value = "userId", required = false) String userId,
+            @RequestParam("feedContent") String feedContent,
+            @RequestParam("images") List<MultipartFile> imageFiles) {
+        logger.info("Received request to create feed for user: " + (userId != null ? userId : "anonymous"));
+
+        if (userId == null || !userService.existsByUserId(userId)) {
+            userId = "anonymous";
+            userService.createAnonymousUserIfNotExist();
+        }
+
+        try {
+            List<String> imageNames = new ArrayList<>();
+            for (MultipartFile imageFile : imageFiles) {
+                if (!imageFile.isEmpty()) {
+                    String filePath = uploadDir + File.separator + imageFile.getOriginalFilename();
+                    File destFile = new File(filePath);
+                    imageFile.transferTo(destFile);
+                    imageNames.add(imageFile.getOriginalFilename());
+                    logger.info("Saved image: " + imageFile.getOriginalFilename() + " at " + filePath);
+                }
+            }
+
+            Feed feed = new Feed();
+            feed.setUserId(userId);
+            feed.setFeedContent(feedContent);
+            feed.setLikeAmount(0);
+            feedCreateService.createFeed(feed, new ArrayList<>(), imageNames);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("redirectUrl", "/feed/createSuccess");
+            return ResponseEntity.ok(response);
+
+        } catch (IOException e) {
+            logger.severe("Error saving files: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("status", "error", "message", "File save error"));
+        } catch (Exception e) {
+            logger.severe("Unexpected error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("status", "error", "message", "Unexpected error"));
+        }
+    }
+
+
+
     // 게시물 수정 성공 페이지 매핑
     @GetMapping("/modifyFeedSuccess")
     public String modifyFeedSuccessPage() {
         return "feed-modify-success"; // feed-modify-success.html 파일과 매핑
+    }
+
+    @GetMapping("/feed/createSuccess")
+    public String showCreateSuccessPage() {
+        return "feed-create-success"; // templates/feed-create-success.html 반환
+    }
+
+    @GetMapping("/createFeedSuccess")
+    public String redirectToFeedCreateSuccess() {
+        return "feed-create-success";
     }
 
     // 게시물 생성 페이지 매핑
