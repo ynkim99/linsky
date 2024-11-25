@@ -14,66 +14,57 @@
 	<!-- 메뉴 바 -->
 	<section class="left" th:replace="~{menu_bar :: menu_bar}">
 	</section>
-
 	<section class="center">
 		<div th:each="feed : ${feeds}">
 			<!-- 피드 전체를 감싸는 div에 data-feed-id 추가 -->
 			<div class="feeds-container" th:data-feed-id="${feed.feedId}">
-				<!-- 게시물 상단 - 사용자 정보 -->
+				<!--  게시물 상단 - 사용자 정보 -->
 				<div class="feed-header">
-					<img th:src="@{(${feed.feedImages != null and !feed.feedImages.isEmpty()} ? '/path/to/images/' + feed.feedImages[0].imgName : '/path/to/images/default.png')}"
-						 alt="프로필 사진" class="profile-img">
-					<span class="username" th:text="${feed.member?.userNickname ?: '익명'}"></span>
+					<img th:src="@{/images/profile/{img}(img=${feed.member.userImg})}" alt="프로필 사진" class="profile-img">
+					<span class="username" th:text="${feed.member.userNickname}"></span>
 				</div>
-
 				<!-- 게시물 이미지 -->
 				<div class="feed-image">
-					<img th:src="@{(${feed.feedImages != null and !feed.feedImages.isEmpty()} ? '/images/feeds/' + feed.feedImages[0].imgName : '/images/feeds/default.png')}"
-						 alt="게시물 사진">
+					<img th:src="@{/images/feeds/{img}(img=${feed.feedImage.imgName})}" alt="게시물 사진">
 				</div>
-
 				<!-- 게시물 하단 - 좋아요 및 댓글 -->
 				<div class="feed-footer">
 					<div class="feed-actions-likes">
 						<div class="feed-actions">
 							<i class="bi bi-heart"></i>
 						</div>
-						<div class="likes" th:text="'좋아요 ' + ${feed.likeAmount ?: 0} + '개'"></div>
+						<div class="likes" th:text="'좋아요 ' + ${feed.likeAmount} + '개'">
+						</div>
 					</div>
-
 					<div class="feed-caption">
-						<span class="username" th:text="${feed.member?.userNickname ?: '익명'}"></span>
-						<span class="caption-text"
-							  th:attr="data-full-text=${feed.feedContent}"
-							  th:text="${feed.feedContent?.length() > 15 ? #strings.abbreviate(feed.feedContent, 15) : feed.feedContent}"></span>
-						<span class="read-more" th:if="${feed.feedContent?.length() > 15}"
-							  onclick="toggleCaption(this)">더보기</span>
+						<span class="username" th:text="${feed.member.userNickname}"></span>
+						<span class="caption-text" th:attr="data-full-text=${feed.feedContent}" 
+								th:text="${#strings.abbreviate(feed.feedContent, 15)}"></span>
+						<span class="read-more"  th:if="${feed.feedContent.length() > 15}"  
+								onclick="toggleCaption(this)">더보기</span>
 					</div>
-
 					<!-- 댓글 n개 보기 -->
 					<div class="comments-view">
-                            <span class="view-comments"
-								  onclick="showComments(this)"
-								  th:text="'댓글 ' + (${feed.comments != null ? feed.comments.size() : 0}) + '개'"></span>
+						<span class="view-comments" onclick="showComments(this)"
+							th:text="'댓글 ' + ${feed.comments.size()} + '개'">
+						</span>
 						<div class="comments-list">
-							<!-- 댓글 리스트 출력 -->
+							<!-- 댓글 리스트 출력-->
 							<div class="comment-item" th:each="comment : ${feed.comments}">
-								<strong th:text="${comment.member?.userNickname ?: '익명'}"></strong>:
+								<strong th:text="${comment.member.userNickname}"></strong>: 
 								<span th:text="${comment.commentContent}"></span>
 							</div>
 						</div>
 					</div>
-
 					<!-- 댓글 입력 -->
 					<div class="comment-input">
-						<input type="text" placeholder="댓글 달기..." />
-						<button>게시</button>
-					</div>
+						<input type="text" placeholder="댓글 달기..." class="comment-input-field" />
+						<button onclick="addComment(this)">게시</button>
+					</div>						
 				</div>
 			</div>
-		</div>
+		</div>	
 	</section>
-
 	<!-- 오른쪽 계정 및 친구 -->
 	<section class="right">
 		<div class="user-profile">

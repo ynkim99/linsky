@@ -122,7 +122,6 @@ public class MainController {
 		return comments != null ? comments : Collections.emptyList();
 	}
 
-
 	/**
 	 * 특정 피드에 대한 좋아요 가져오기 API
 	 */
