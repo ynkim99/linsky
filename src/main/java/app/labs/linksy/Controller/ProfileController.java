@@ -1,11 +1,13 @@
 package app.labs.linksy.Controller;
 
-import app.labs.linksy.Service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import app.labs.linksy.Service.ProfileSettingService;
+import app.labs.linksy.Service.HttpSessionService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Value;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -14,22 +16,34 @@ import java.util.Map;
 @RequestMapping("/settings")
 public class ProfileController {
 
+    @Autowired
+    private ProfileSettingService profileSettingService;
+
+    @Autowired
+    private HttpSessionService httpSessionService;
+
+    @Value("${spring.servlet.multipart.location}")
+    private String uploadDir;
 
     @PostMapping("/save-nickname")
-    public ResponseEntity<String> saveNickname(@RequestBody Map<String, String> request) {
-        String newNickname = request.get("nickname");
+    public ResponseEntity<String> saveNickname(@RequestParam("nickname") String newNickname,
+                                                HttpSession session) {
 
         if (newNickname == null || newNickname.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("닉네임이 유효하지 않습니다.");
         }
 
         System.out.println("닉네임 변경 요청: " + newNickname);
-        // 추가: 실제 닉네임 저장 로직 (DB 혹은 서비스 호출)
+        
+        String userId = httpSessionService.sessionConfirm(session);
+        profileSettingService.updateNickname(userId, newNickname);
+
         return ResponseEntity.ok("닉네임이 성공적으로 변경되었습니다.");
     }
 
     @PostMapping("/save-password")
-    public ResponseEntity<String> savePassword(@RequestBody Map<String, String> request) {
+    public ResponseEntity<String> savePassword(@RequestBody Map<String, String> request,
+                                                HttpSession session) {
         String currentPassword = request.get("currentPassword");
         String newPassword = request.get("newPassword");
 
@@ -38,39 +52,36 @@ public class ProfileController {
         }
 
         System.out.println("비밀번호 변경 요청: " + newPassword);
-        // 추가: 실제 비밀번호 변경 로직 (DB 혹은 서비스 호출)
+
+        String userId = httpSessionService.sessionConfirm(session);
+        profileSettingService.updatePassword(userId, currentPassword, newPassword);
+
         return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
     }
 
     @PostMapping("/save-profile")
     public ResponseEntity<String> saveProfile(
             @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
-            @RequestParam("bio") String bio) {
-
-        String uploadDir = "C:/upload/profileImages/";
-        File uploadFolder = new File(uploadDir);
-
-        if (!uploadFolder.exists()) {
-            uploadFolder.mkdirs();
-        }
+            @RequestParam("userIntroduce") String userIntroduce,
+            HttpSession session) {
 
         String profileImagePath = null;
         if (profileImage != null && !profileImage.isEmpty()) {
             try {
                 String fileName = profileImage.getOriginalFilename();
-                File destination = new File(uploadDir + fileName);
+                File destination = new File(uploadDir + "/" + fileName);
                 profileImage.transferTo(destination);
-                profileImagePath = "/profileImages/" + fileName;
+                profileImagePath = fileName;  // DB에는 파일명만 저장
+                System.out.println("저장된 프로필 이미지 경로: " + profileImagePath);
             } catch (IOException e) {
                 e.printStackTrace();
                 return ResponseEntity.internalServerError().body("프로필 이미지 저장 중 오류 발생");
             }
         }
 
-        System.out.println("저장된 프로필 이미지 경로: " + profileImagePath);
-        System.out.println("저장된 소개글: " + bio);
-
-        // 추가: 실제 프로필 저장 로직 (DB 혹은 서비스 호출)
+        String userId = httpSessionService.sessionConfirm(session);
+        profileSettingService.updateProfileImage(userId, profileImagePath);
+        profileSettingService.updateUserIntroduce(userId, userIntroduce);
 
         return ResponseEntity.ok("프로필이 성공적으로 저장되었습니다.");
     }
