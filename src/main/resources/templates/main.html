@@ -32,7 +32,10 @@
 				<div class="feed-footer">
 					<div class="feed-actions-likes">
 						<div class="feed-actions">
-							<i class="bi bi-heart"></i>
+							<i class="bi" th:class="${feed.isLikedByUser ? 'bi-heart-fill' : 'bi-heart'}" 
+							onclick="toggleLike(this)" 
+							th:data-feed-id="${feed.feedId}" 
+							th:data-user-id="${member.userId}"></i>
 						</div>
 						<div class="likes" th:text="'좋아요 ' + ${feed.likeAmount} + '개'">
 						</div>

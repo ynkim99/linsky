@@ -2,6 +2,7 @@ package app.labs.linksy.DAO;
 
 import java.util.List;
 import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,4 +16,7 @@ public interface FeedRepository {
     int getLikeAmount(@Param("feedId") int feedId);
     List<Map<String, String>> getFeedLikes(@Param("feedId") int feedId);
 	List<Feed> getFeedsWithDetails();
+	public boolean isUserLikedFeed(@Param("feedId") int feedId, @Param("userId") String userId);
+
+	
 }

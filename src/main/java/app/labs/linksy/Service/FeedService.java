@@ -20,17 +20,26 @@ public class FeedService implements IFeedService{
         return feedRepository.getFeedsWithDetails();
     }
 	
-	public int likeFeed(int feedId, String userId) {
-	    feedRepository.addLike(feedId, userId);
-	    return feedRepository.getLikeAmount(feedId);
-	}
+    public void likeFeed(int feedId, String userId) {
+        feedRepository.addLike(feedId, userId);
+    }
 
-	public int unlikeFeed(int feedId, String userId) {
-	    feedRepository.removeLike(feedId, userId);
-	    return feedRepository.getLikeAmount(feedId);
-	}
+    public void unlikeFeed(int feedId, String userId) {
+        feedRepository.removeLike(feedId, userId);
+    }
+    
+    public boolean isUserLikedFeed(int feedId, String userId) {
+        return feedRepository.isUserLikedFeed(feedId, userId);
+    }
+    
+    public int getLikeAmount(int feedId) {
+        return feedRepository.getLikeAmount(feedId);
+    }
 
     public List<Map<String, String>> getFeedLikes(int feedId) {
         return feedRepository.getFeedLikes(feedId);
     }
+    
+    
+    
 }

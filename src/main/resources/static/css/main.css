@@ -131,7 +131,15 @@ section.center::-webkit-scrollbar-thumb {
 .feed-actions-likes {
     display: flex;
     align-items: center; 
-    gap: 10px; 
+    gap: 10px;     
+}
+
+.feed-actions-likes i {
+    cursor: pointer;
+}
+
+.bi-heart-fill {
+    color: red;
 }
 
 .feed-caption {
@@ -160,7 +168,6 @@ section.center::-webkit-scrollbar-thumb {
 }
 
 /* 댓글 모두 보기 */
-
 .view-comments {
     cursor: pointer;
 }

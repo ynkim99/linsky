@@ -60,6 +60,31 @@ function toggleCaption(readMoreElement) {
     }
 }
 
+// 좋아요 토글
+function toggleLike(element) {
+    const feedId = element.getAttribute('data-feed-id');
+    const userId = element.getAttribute('data-user-id');
+
+    fetch('/linksy/toggleLike', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `feedId=${feedId}&userId=${userId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        // 좋아요 상태 업데이트
+        element.className = data.isLiked ? 'bi-heart-fill' : 'bi-heart';
+
+        // 좋아요 수 업데이트
+        const likesElement = element.closest('.feed-actions-likes').querySelector('.likes');
+        likesElement.textContent = `좋아요 ${data.likeAmount}개`;
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// 댓글 작성
 function addComment(buttonElement) {
     const commentInput = buttonElement.previousElementSibling;
     const commentContent = commentInput.value.trim();

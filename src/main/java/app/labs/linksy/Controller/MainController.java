@@ -1,6 +1,7 @@
 package app.labs.linksy.Controller;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,15 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
 import app.labs.linksy.Model.Comment;
 import app.labs.linksy.Model.Feed;
 import app.labs.linksy.Model.Member;
 import app.labs.linksy.Service.CommentService;
 import app.labs.linksy.Service.FeedService;
 import app.labs.linksy.Service.FollowService;
-import app.labs.linksy.Service.MemberService;
 import app.labs.linksy.Service.HttpSessionService;
+import app.labs.linksy.Service.MemberService;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -75,6 +75,12 @@ public class MainController {
 	    for (Feed feed : feeds) {
 	        List<Comment> comments = commentService.getCommentsByFeedId(feed.getFeedId());
 	        feed.setComments(comments); // Feed 모델에 comments 필드를 추가해야 합니다.
+	 
+	        // 좋아요 수 업데이트
+	        feed.setLikeAmount(feedService.getLikeAmount(feed.getFeedId()));
+	        // 사용자가 이 피드를 좋아요 했는지 확인
+	        boolean isLiked = feedService.isUserLikedFeed(feed.getFeedId(), userId);
+	        feed.setLikedByUser(isLiked);  // isLikedByUser 값 설정
 	    }
 
 
@@ -117,7 +123,32 @@ public class MainController {
 
         return comment; // 클라이언트에게 저장된 댓글 정보를 반환
     }
+	
+	@PostMapping("/toggleLike")
+	@ResponseBody
+	public Map<String, Object> toggleLike(@RequestParam("feedId") int feedId,
+	                                      @RequestParam("userId") String userId) {
+	    boolean isLiked = feedService.isUserLikedFeed(feedId, userId);
 
+	    if (isLiked) {
+	        // 이미 좋아요가 눌려져 있으면 좋아요 취소
+	        feedService.unlikeFeed(feedId, userId);
+	    } else {
+	        // 좋아요가 눌려져 있지 않으면 좋아요 추가
+	        feedService.likeFeed(feedId, userId);
+	    }
+
+	    // 변경된 좋아요 개수 가져오기
+	    int likeAmount = feedService.getLikeAmount(feedId);
+
+	    // 결과 반환
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("isLiked", !isLiked);  // 변경된 좋아요 상태
+	    response.put("likeAmount", likeAmount);  // 새로운 좋아요 개수
+
+	    return response;
+	}
+	
 	/**
 	 * 특정 피드에 대한 좋아요 가져오기 API
 	 */

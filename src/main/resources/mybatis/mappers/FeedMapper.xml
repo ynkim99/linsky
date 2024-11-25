@@ -64,5 +64,12 @@
         JOIN Member m ON fl.user_id = m.user_id
         WHERE fl.feed_id = #{feedId}
     </select>
+    
+    <!-- 사용자가 특정 피드를 좋아요 했는지 확인 -->
+	<select id="isUserLikedFeed" resultType="boolean">
+	    SELECT COUNT(*)
+	    FROM Feed_Like
+	    WHERE feed_id = #{feedId} AND user_id = #{userId}
+	</select>
 
 </mapper>

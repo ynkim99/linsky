@@ -19,6 +19,7 @@ public class Feed {
 	private String feedContent;
 	private Timestamp feedTime;
 	private int likeAmount;
+	private boolean isLikedByUser;
 	
 	private Member member;  // Member 객체를 참조
 	private FeedImage feedImages;  // FeedImage 객체를 참조
