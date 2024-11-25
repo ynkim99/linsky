@@ -20,6 +20,7 @@ import app.labs.linksy.Model.Feed;
 import app.labs.linksy.Model.Member;
 import app.labs.linksy.Service.CommentService;
 import app.labs.linksy.Service.FeedService;
+import app.labs.linksy.Service.FollowService;
 import app.labs.linksy.Service.MemberService;
 import jakarta.servlet.http.HttpSession;
 
