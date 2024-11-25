@@ -17,9 +17,9 @@
 	    </association>
 	    
 	    <!-- FeedImage 매핑 -->
-	    <association property="feedImage" javaType="app.labs.linksy.Model.FeedImage">
+	    <collection property="feedImages" ofType="app.labs.linksy.Model.FeedImage">
 	        <result property="imgName" column="imgName"/>
-	    </association>
+	    </collection>
 	</resultMap>
 	
 	<!-- 피드와 관련된 데이터 조회 -->

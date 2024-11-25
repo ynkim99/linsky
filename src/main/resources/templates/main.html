@@ -11,9 +11,10 @@
 </head>
 <body>
 <div class="main">
-	<!-- 메뉴 바 -->
-	<section class="left" th:replace="~{menu_bar :: menu_bar}">
-	</section>
+	<!-- 메뉴바 -->
+	<div th:replace="~{menu_bar :: menu_bar}"></div>
+	
+	<!-- 중앙 컨텐츠 -->
 	<section class="center">
 		<div th:each="feed : ${feeds}">
 			<!-- 피드 전체를 감싸는 div에 data-feed-id 추가 -->

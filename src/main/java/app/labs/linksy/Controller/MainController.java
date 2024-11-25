@@ -99,8 +99,12 @@ public class MainController {
 	// 댓글 작성하기
 	@PostMapping("/addComment")
     @ResponseBody
-    public Comment addComment(@RequestParam("feedId") int feedId, @RequestParam("commentContent") String commentContent) {
-        String userId = "testUser"; // 하드코딩된 로그인 사용자 ID
+    public Comment addComment(@RequestParam("feedId") int feedId, 
+							@RequestParam("commentContent") String commentContent,
+							HttpSession session) {
+        
+        String userId = (String) session.getAttribute("userId");
+        
         Comment comment = new Comment();
         comment.setFeedId(feedId);
         comment.setCommentContent(commentContent);
