@@ -3,21 +3,22 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
 <mapper namespace="app.labs.linksy.DAO.CommentRepository">
-    <resultMap id="feedResultMap" type="Feed">
-        <id property="feedId" column="FEED_ID"/>
-        <result property="userId" column="USER_ID"/>
-        <result property="feedContent" column="FEED_CONTENT"/>
-        <result property="feedTime" column="FEED_TIME"/>
-        <result property="likeAmount" column="LIKE_AMOUNT"/>
-        <collection property="feedImages" ofType="FeedImage">
-            <result property="imgName" column="feedImageName"/>
-        </collection>
+    <resultMap id="commentResultMap" type="app.labs.linksy.Model.Comment">
+        <id property="commentId" column="commentId"/>
+        <result property="userId" column="userId"/>
+        <result property="feedId" column="feedId"/>
+        <result property="commentContent" column="commentContent"/>
+        <result property="parentId" column="parentId"/>
+        <result property="commentTime" column="commentTime"/>       
+        <!-- Member 객체를 매핑 -->
+	    <association property="member" javaType="app.labs.linksy.Model.Member">
+	        <result property="userNickname" column="userNickname"/>
+	    </association>
     </resultMap>
 
-
-    <!-- 특정 피드의 댓글 가져오기
+    <!-- 특정 피드의 댓글 가져오기 -->
     <select id="getCommentsByFeedId" resultMap="commentResultMap">
-        SELECT
+        SELECT 
             c.comment_id AS commentId,
             c.user_id AS userId,
             c.feed_id AS feedId,
@@ -29,16 +30,11 @@
         JOIN MEMBER m ON c.user_id = m.user_id
         WHERE c.feed_id = #{feedId}
         ORDER BY c.parent_id ASC NULLS FIRST, c.comment_time ASC
-    </select> -->
-
-    <select id="getCommentsByFeedIds" resultType="app.labs.linksy.Model.Comment">
-        SELECT *
-        FROM COMMENTS
-        WHERE FEED_ID IN
-        <foreach collection="feedIds" item="id" open="(" separator="," close=")">
-            #{id}
-        </foreach>
     </select>
 
-
+    <!-- 댓글 저장 -->
+    <insert id="insertComment" parameterType="app.labs.linksy.Model.Comment">
+	    INSERT INTO COMMENTS (comment_id, user_id, feed_id, comment_content, parent_id, comment_time)
+	    VALUES (SEQ_COMMENT_ID.NEXTVAL, #{userId}, #{feedId}, #{commentContent}, NULL, SYSDATE)
+	</insert>
 </mapper>

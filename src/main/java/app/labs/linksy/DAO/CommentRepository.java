@@ -9,8 +9,7 @@ import app.labs.linksy.Model.Comment;
 
 @Mapper
 public interface CommentRepository {
-    //List<Comment> getCommentsByFeedId(@Param("feedId") int feedId);
-
-    List<Comment> getCommentsByFeedIds(@Param("feedIds") List<Integer> feedIds);
+	List<Comment> getCommentsByFeedId(@Param("feedId") int feedId);
+    void insertComment(Comment comment);
 
 }

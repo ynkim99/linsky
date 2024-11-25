@@ -16,5 +16,6 @@ public class Comment {
 	private Timestamp commentTime;
 	
 	private Member member;
+	private FeedImage feedImage;
 	
 }

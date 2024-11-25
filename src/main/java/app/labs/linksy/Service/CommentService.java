@@ -1,26 +1,25 @@
 package app.labs.linksy.Service;
 
-import app.labs.linksy.DAO.CommentRepository;
-import app.labs.linksy.Model.Comment;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import app.labs.linksy.DAO.CommentRepository;
+import app.labs.linksy.Model.Comment;
 
 @Service
-public class CommentService {
+public class CommentService implements ICommentService{
 
-	private final CommentRepository commentRepository;
+	 @Autowired
+	 private CommentRepository commentRepository;
 
-	public CommentService(CommentRepository commentRepository) {
-		this.commentRepository = commentRepository;
-	}
-
-	public Map<Integer, List<Comment>> getCommentsByFeedIds(List<Integer> feedIds) {
-		List<Comment> comments = commentRepository.getCommentsByFeedIds(feedIds);
-
-		// Group comments by feedId
-		return comments.stream().collect(Collectors.groupingBy(Comment::getFeedId));
-	}
+	 public List<Comment> getCommentsByFeedId(int feedId) {
+	     return commentRepository.getCommentsByFeedId(feedId);
+	 }
+	 
+	 // 댓글 추가하기
+	 public void addComment(Comment comment) {
+	     commentRepository.insertComment(comment);
+	 }
 }
