@@ -1,4 +1,4 @@
-package app.labs.linksy.config;
+package app.labs.linksy.Config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

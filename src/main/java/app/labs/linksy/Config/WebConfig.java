@@ -1,4 +1,4 @@
-package app.labs.linksy.config;
+package app.labs.linksy.Config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

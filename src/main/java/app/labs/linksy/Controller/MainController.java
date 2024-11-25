@@ -77,7 +77,7 @@ public class MainController {
 		}
 
 
-// Null 값 필터링
+		// Null 값 필터링
 		List<Integer> feedIds = feeds.stream()
 				.filter(Objects::nonNull)
 				.map(Feed::getFeedId)
