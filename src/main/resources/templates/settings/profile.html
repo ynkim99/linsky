@@ -11,7 +11,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="logo_img">
-            <a href="/">
+            <a href="/linksy">
                 <img src="/images/logo/blacklogo.png" alt="Linksy 로고">
             </a>
         </div>
@@ -29,7 +29,7 @@
                 <div class="profile-section">
                     <!-- 프로필 사진 -->
                     <div class="profile-image-wrapper">
-                        <img src="/images/profile/default-profile.png" id="profileImage" alt="프로필 이미지">
+                        <img src="${@/upload} + ${member.userImg}" id="profileImage" alt="프로필 이미지">
                     </div>
                     <div class="file-input">
                         <label for="profileImageUpload">사진 변경</label>
@@ -40,13 +40,13 @@
 
                 <!-- 닉네임 표시 -->
                 <div>
-                    <p>현재 닉네임: <strong id="nickname">사용자닉네임</strong></p>
+                    <p>현재 닉네임: <strong id="nickname">${member.nickName}</strong></p>
                 </div>
 
                 <!-- 소개글 -->
                 <div class="bio-section">
                     <label for="bio">소개글</label>
-                    <textarea id="bio" name="bio" placeholder="자기소개를 작성하세요.(200자 이내)" maxlength="200"></textarea>
+                    <textarea id="bio" name="bio" placeholder="자기소개를 작성하세요.(200자 이내)" maxlength="200">${member.userIntroduce}</textarea>
                     <p id="charCount">0/200</p>
                 </div>
 
@@ -70,7 +70,7 @@
 <div id="nicknameModal" class="modal">
     <div class="modal-content">
         <h2>닉네임 변경</h2>
-        <input type="text" id="newNickname" placeholder="새 닉네임 입력">
+        <input type="text" id="newNickname" placeholder="${member.nickName}">
         <button onclick="saveNickname()">저장</button>
         <button onclick="closeModal('nicknameModal')">취소</button>
     </div>

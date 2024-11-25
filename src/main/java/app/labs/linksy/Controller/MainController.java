@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
 import app.labs.linksy.Model.Comment;
 import app.labs.linksy.Model.Feed;
 import app.labs.linksy.Model.Member;
@@ -22,6 +23,7 @@ import app.labs.linksy.Service.CommentService;
 import app.labs.linksy.Service.FeedService;
 import app.labs.linksy.Service.FollowService;
 import app.labs.linksy.Service.MemberService;
+import app.labs.linksy.Service.HttpSessionService;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -40,18 +42,14 @@ public class MainController {
 	@Autowired
 	private FollowService followService;
 
+	@Autowired
+	private HttpSessionService httpSessionService;
+
 	// 메인 페이지 호출
 	@GetMapping("")
 	public String main(Model model, HttpSession session) {
-		// 세션에서 사용자 ID 가져오기
-		String userId = (String) session.getAttribute("userId");
-		System.out.println("Fetching member with userId: " + userId);
-
-		// 사용자 인증 확인
-		if (userId == null || userId.isEmpty()) {
-			System.out.println("User is not logged in.");
-			return "redirect:/login"; // 로그인 페이지로 리다이렉션
-		}
+		
+		String userId = httpSessionService.sessionConfirm(session);
 
 		// 사용자 정보 가져오기
 		Member member = memberService.getMemberByUserId(userId);

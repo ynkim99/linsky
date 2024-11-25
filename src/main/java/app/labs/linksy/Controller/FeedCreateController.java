@@ -4,6 +4,9 @@ import app.labs.linksy.Model.Feed;
 import app.labs.linksy.Service.FeedCreateService;
 import app.labs.linksy.Service.UserService;
 import app.labs.linksy.Util.HashtagExtractor;
+import app.labs.linksy.Service.HttpSessionService;
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -29,6 +32,9 @@ public class FeedCreateController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private HttpSessionService httpSessionService;
 
     private static final Logger logger = Logger.getLogger(FeedCreateController.class.getName());
 
@@ -203,9 +209,10 @@ public class FeedCreateController {
     @PostMapping("/feed/create")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> createFeed(
-            @RequestParam(value = "userId", required = false) String userId,
+            HttpSession session,
             @RequestParam("feedContent") String feedContent,
             @RequestParam("images") List<MultipartFile> imageFiles) {
+        String userId = httpSessionService.sessionConfirm(session);
         logger.info("Received request to create feed for user: " + (userId != null ? userId : "anonymous"));
 
         if (userId == null || !userService.existsByUserId(userId)) {
