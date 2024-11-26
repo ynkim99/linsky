@@ -15,6 +15,7 @@ body {
     border-radius: 10px;
     width: 300px;
     text-align: center;
+    position: relative;
 }
 
 .container img {
@@ -81,4 +82,19 @@ body {
 .login-form {
     max-width: 400px;
     margin: 0 auto;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #666;
 }
