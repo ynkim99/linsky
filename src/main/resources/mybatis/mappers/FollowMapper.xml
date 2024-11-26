@@ -24,4 +24,18 @@
         JOIN MEMBER m ON f.following_id = m.user_id
         WHERE f.follower_id = #{followerId}
     </select>
+
+    <!-- 팔로워 수 조회 -->
+    <select id="getFollowerCount" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM FOLLOW
+        WHERE following_id = #{userId}
+    </select>
+
+    <!-- 팔로잉 수 조회 -->
+    <select id="getFollowingCount" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM FOLLOW
+        WHERE follower_id = #{userId}
+    </select>
 </mapper>

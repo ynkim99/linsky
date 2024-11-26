@@ -17,4 +17,12 @@ public class FollowService implements IFollowService {
     public List<Member> getFollowings(String followerId) {
         return followrepository.getFollowings(followerId);
     }
+
+    public int getFollowerCount(String userId) {
+        return followrepository.getFollowerCount(userId);
+    }
+
+    public int getFollowingCount(String userId) {
+        return followrepository.getFollowingCount(userId);
+    }
 }

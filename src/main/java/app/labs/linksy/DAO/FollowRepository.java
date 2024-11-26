@@ -11,4 +11,7 @@ import app.labs.linksy.Model.Member;
 public interface FollowRepository {
 	 // 팔로우한 사용자의 정보를 가져오기
     List<Member> getFollowings(@Param("followerId") String followerId);
+    
+    int getFollowerCount(String userId);
+    int getFollowingCount(String userId);
 }

@@ -12,7 +12,7 @@ import app.labs.linksy.Model.Feed;
 import app.labs.linksy.Model.Member;
 import app.labs.linksy.Service.MemberService;
 import app.labs.linksy.Service.SearchService;
-
+import app.labs.linksy.Service.FollowService;
 
 @Controller 
 public class profilePageController {
@@ -21,6 +21,8 @@ public class profilePageController {
     private MemberService memberService;
     @Autowired
     private SearchService searchService;
+    @Autowired
+    private FollowService followService;
 
     // 사용중인 사용자의 프로필 페이지
     @GetMapping("/profile")
@@ -46,11 +48,30 @@ public class profilePageController {
         }
         
         List<Feed> feeds = searchService.getFeedsByUserId(targetUserId);
+        // 피드 수 계산
+        int feedCount = feeds.size();
+        model.addAttribute("feedCount", feedCount);
+        
+        // 각 피드의 좋아요 수와 댓글 수를 설정
+        for (Feed feed : feeds) {
+            int likeCount = searchService.getLikeCount(feed.getFeedId());
+            int commentCount = searchService.getCommentCount(feed.getFeedId());
+            model.addAttribute("likeCount", likeCount);
+            model.addAttribute("commentCount", commentCount);
+        }
+        
         boolean isOwnProfile = currentUserId != null && currentUserId.equals(targetUserId);
+        
+        // 팔로워와 팔로잉 수 가져오기
+        int followerCount = followService.getFollowerCount(targetUserId);
+        int followingCount = followService.getFollowingCount(targetUserId);
         
         model.addAttribute("member", member);
         model.addAttribute("feeds", feeds);
         model.addAttribute("isOwnProfile", isOwnProfile);
+        model.addAttribute("followerCount", followerCount);
+        model.addAttribute("followingCount", followingCount);
+        
         return "profilePage/profile";
     }
 
