@@ -10,13 +10,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import app.labs.linksy.Model.Feed;
 import app.labs.linksy.Model.Member;
+import app.labs.linksy.Model.Comment;
 import app.labs.linksy.Service.SearchService;
+import app.labs.linksy.Service.CommentService;
 
 @Controller 
 public class SearchController {
 	
 	@Autowired
 	SearchService searchserv;
+
+    @Autowired
+    CommentService commentService;
 	
 	@GetMapping("/search")
     public String showSearchPage(
@@ -48,6 +53,12 @@ public class SearchController {
     ) {
         if (!keyword.isEmpty()) {
             List<Feed> hashtagFeeds = searchserv.searchFeedsByHashtag(keyword);
+            for (Feed feed : hashtagFeeds) {
+                int likeCount = searchserv.getLikeCount(feed.getFeedId());
+                int commentCount = searchserv.getCommentCount(feed.getFeedId());
+                feed.setLikeAmount(likeCount);
+                feed.setCommentCount(commentCount);
+            }
             model.addAttribute("hashtagFeeds", hashtagFeeds);
         }
         model.addAttribute("keyword", keyword);
@@ -62,6 +73,12 @@ public class SearchController {
     ) {
         if (!keyword.isEmpty()) {
             List<Feed> feeds = searchserv.searchFeedsByKeyword(keyword);
+            for (Feed feed : feeds) {
+                int likeCount = searchserv.getLikeCount(feed.getFeedId());
+                int commentCount = searchserv.getCommentCount(feed.getFeedId());
+                feed.setLikeAmount(likeCount);
+                feed.setCommentCount(commentCount);
+            }
             model.addAttribute("feeds", feeds);
         }
         model.addAttribute("keyword", keyword);
@@ -72,7 +89,9 @@ public class SearchController {
 	@GetMapping("/search/feedPopup/{feedId}")
 	public String getFeedPopup(@PathVariable("feedId") int feedId, Model model) {
 		Feed feed = searchserv.getFeedById(feedId);
+		List<Comment> comments = commentService.getCommentsByFeedId(feedId);
 		model.addAttribute("feed", feed);
+		model.addAttribute("comments", comments);
 		return "searchPage/searchFeedPopup";
 	}
 	

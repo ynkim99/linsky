@@ -11,5 +11,5 @@ import app.labs.linksy.Model.Comment;
 public interface CommentRepository {
 	List<Comment> getCommentsByFeedId(@Param("feedId") int feedId);
     void insertComment(Comment comment);
-
+    int getCommentCount(int feedId);
 }

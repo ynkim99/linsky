@@ -31,7 +31,7 @@ public class profilePageController {
 
     // 다른 사용자의 프로필 페이지
     @GetMapping("/profile/{userId}")
-    public String userProfile(@PathVariable String userId, 
+    public String userProfile(@PathVariable("userId") String userId, 
                             HttpSession session, 
                             Model model) {
         String currentUserId = (String) session.getAttribute("userId");

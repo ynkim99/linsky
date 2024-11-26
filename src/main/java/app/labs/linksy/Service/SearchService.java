@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import app.labs.linksy.DAO.SearchRepository;
+import app.labs.linksy.DAO.FeedRepository;
+import app.labs.linksy.DAO.CommentRepository;
 import app.labs.linksy.Model.Feed;
 import app.labs.linksy.Model.Member;
 
@@ -14,6 +16,12 @@ public class SearchService {
 	
 	@Autowired
 	SearchRepository searchrepo;
+	
+	@Autowired
+	private FeedRepository feedRepository;
+	
+	@Autowired
+	private CommentRepository commentRepository;
 	
 	public SearchService(SearchRepository searchrepo) {
         this.searchrepo = searchrepo;
@@ -41,5 +49,13 @@ public class SearchService {
 
     public List<Feed> getFeedsByUserId(String userId) {
         return searchrepo.getFeedsByUserId(userId);
+    }
+
+    public int getLikeCount(int feedId) {
+        return feedRepository.getLikeAmount(feedId);
+    }
+
+    public int getCommentCount(int feedId) {
+        return commentRepository.getCommentCount(feedId);
     }
 }

@@ -110,7 +110,9 @@
                     <div id="account" class="tab-panel" th:classappend="${activeTab == 'account'} ? 'active'">
                         <h2>Account Content</h2>
                         <div th:if="${members != null}">
-                            <div th:each="member : ${members}" class="member-card">
+                            <div th:each="member : ${members}" class="member-card" 
+                                 th:data-user-id="${member.userId}"
+                                 style="cursor: pointer;">
                                 <img th:src="${member.userImg}" alt="Profile" class="profile-img">
                                 <div class="member-info">
                                     <span class="member-name" th:text="${member.userName}"></span>
@@ -271,6 +273,15 @@ function activateSecretTab() {
     alert("🎉 축하합니다! 숨겨진 탭이 활성화되었습니다!");
 }
 
+</script>
+
+<script>
+document.querySelectorAll('.member-card').forEach(card => {
+    card.addEventListener('click', function() {
+        const userId = this.getAttribute('data-user-id');
+        location.href = '/profile/' + userId;
+    });
+});
 </script>
 
 </html>

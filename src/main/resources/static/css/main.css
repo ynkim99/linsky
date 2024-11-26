@@ -377,3 +377,15 @@ section.right {
     border-right: 1px solid #dbdbdb;
     z-index: 1000;
 }
+
+/* 로그아웃 버튼 */
+.logout {
+    text-align: right;
+    border: none;
+    color: inherit;
+}
+
+.logout a{
+    text-decoration-line: none;
+    cursor: pointer;
+}
