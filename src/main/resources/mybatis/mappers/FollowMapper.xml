@@ -38,4 +38,31 @@
         FROM FOLLOW
         WHERE follower_id = #{userId}
     </select>
+
+    <!-- 팔로우 추가 -->
+    <insert id="follow">
+        INSERT INTO FOLLOW (
+            follow_id,
+            follower_id,
+            following_id
+        ) VALUES (
+            FOLLOW_SEQ.NEXTVAL,
+            #{followerId},
+            #{followingId}
+        )
+    </insert>
+
+    <!-- 팔로우 삭제 -->
+    <delete id="unfollow" parameterType="app.labs.linksy.Model.Follow">
+        DELETE FROM FOLLOW
+        WHERE follower_id = #{followerId} AND following_id = #{followingId}
+    </delete>
+
+    <!-- 팔로우 상태 확인 -->
+    <select id="checkFollowStatus" parameterType="String" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM FOLLOW
+        WHERE follower_id = #{followerId} AND following_id = #{followingId}
+    </select>
+
 </mapper>

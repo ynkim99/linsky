@@ -40,6 +40,8 @@ public class FeedService implements IFeedService{
         return feedRepository.getFeedLikes(feedId);
     }
     
-    
+    public String getUserByFeedId(int feedId) {
+        return feedRepository.getUserByFeedId(feedId);
+    }
     
 }

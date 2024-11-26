@@ -134,15 +134,21 @@
 
   // API 호출 및 데이터 렌더링
   fetch(`/api/feed/likes?feedId=${feedId}`)
-          .then(response => response.json())
-          .then(data => {
-            const container = document.getElementById('likes-container');
-            container.innerHTML = ''; // 기존 내용을 초기화
+    .then(response => response.json())
+    .then(async data => {
+        const container = document.getElementById('likes-container');
+        container.innerHTML = '';
 
-            if (data.length === 0) {
-              container.innerHTML = '<p style="text-align: center; color: #888;">No likes found for this feed.</p>';
-            } else {
-              data.forEach(user => {
+        if (data.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #888;">No likes found for this feed.</p>';
+        } else {
+            // 모든 사용자의 팔로우 상태를 한번에 확인
+            const followStatuses = await Promise.all(
+                data.map(user => checkFollowStatus(user.userId, feedId))
+            );
+
+            // 팔로우 상태와 함께 UI 렌더링
+            data.forEach((user, index) => {
                 const likeItem = document.createElement('div');
                 likeItem.classList.add('likeItem');
 
@@ -153,26 +159,70 @@
 
                 const userInfo = document.createElement('div');
                 userInfo.classList.add('userInfo');
-                userInfo.textContent = user.userId;
+                userInfo.textContent = user.userNickname;
 
                 const followBtn = document.createElement('button');
                 followBtn.classList.add('followButton');
-                followBtn.textContent = 'Follow';
-                followBtn.onclick = () => alert(`Followed ${user.userId}`);
+
+                // 미리 확인된 팔로우 상태 사용
+                const isFollowing = followStatuses[index];
+                if (isFollowing) {
+                    followBtn.textContent = 'Unfollow';
+                    followBtn.style.backgroundColor = '#dc3545';
+                } else {
+                    followBtn.textContent = 'Follow';
+                    followBtn.style.backgroundColor = '#007bff';
+                }
+
+                // 팔로우 버튼 클릭 이벤트
+                followBtn.onclick = async () => {
+                    try {
+                        if (followBtn.textContent === 'Follow') {
+                            // 팔로우 요청
+                            const response = await fetch('/api/follow', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: `followingId=${user.userId}&followerId=${currentUserId}`
+                            });
+                            
+                            if (response.ok) {
+                                followBtn.textContent = 'Unfollow';
+                                followBtn.style.backgroundColor = '#dc3545';
+                            }
+                        } else {
+                            // 언팔로우 요청
+                            const response = await fetch('/api/unfollow', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: `followingId=${user.userId}&followerId=${currentUserId}`
+                            });
+                            
+                            if (response.ok) {
+                                followBtn.textContent = 'Follow';
+                                followBtn.style.backgroundColor = '#007bff';
+                            }
+                        }
+                    } catch (error) {
+                        console.error('팔로우/언팔로우 실패:', error);
+                    }
+                };
 
                 likeItem.appendChild(profileImg);
                 likeItem.appendChild(userInfo);
                 likeItem.appendChild(followBtn);
-
                 container.appendChild(likeItem);
-              });
-            }
-          })
-          .catch(error => {
-            console.error('Error fetching likes:', error);
-            document.getElementById('likes-container').innerHTML =
-                    '<p style="text-align: center; color: red;">Failed to load likes list.</p>';
-          });
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching likes:', error);
+        document.getElementById('likes-container').innerHTML =
+            '<p style="text-align: center; color: red;">Failed to load likes list.</p>';
+    });
 
   function closeLikeList() {
     alert('Close button clicked!');

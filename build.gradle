@@ -53,11 +53,15 @@ dependencies {
     implementation 'javax.servlet:javax.servlet-api:4.0.1' // 버전은 최신 버전 사용 권장
 
     //websocket
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket' // 스프링 웹소켓
+    implementation 'org.webjars:sockjs-client:1.5.1' // SockJS 클라이언트
+    implementation 'org.webjars:stomp-websocket:2.3.4' // STOMP 클라이언트
 
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.springframework.boot:spring-boot-starter-logging'
+
+    
 
 }
 

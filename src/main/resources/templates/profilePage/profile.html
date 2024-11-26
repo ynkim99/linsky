@@ -26,9 +26,16 @@
                     <div class="profile_details">
                         <div class="profile_name">
                             <h2 th:text="${member.userNickname}"></h2>
-                            <a th:if="${isOwnProfile}" href="/profile/edit" class="edit_button">
+                            <a th:if="${isOwnProfile}" th:href="@{/settings/profile}" class="edit_button">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
+                            <button th:if="${!isOwnProfile}" 
+                                    class="follow_button" 
+                                    th:attr="data-user-id=${member.userId}"
+                                    onclick="toggleFollow(this)">
+                                <i class="bi bi-person-plus" id="followIcon"></i>
+                                <span id="followText">팔로우</span>
+                            </button>
                         </div>
                         <div class="profile_stats">
                             <div class="stat">
@@ -99,6 +106,87 @@
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
+        }
+
+        // 페이지 로드 시 팔로우 상태 확인
+        document.addEventListener('DOMContentLoaded', function() {
+            const followButton = document.querySelector('.follow_button');
+            if (followButton) {
+                const userId = followButton.getAttribute('data-user-id');
+                checkFollowStatus(userId);
+            }
+        });
+
+        function checkFollowStatus(userId) {
+            fetch(`/api/follow/check/${userId}`)
+                .then(response => response.json())
+                .then(isFollowing => {
+                    updateFollowButton(isFollowing);
+                })
+                .catch(error => {
+                    console.error('팔로우 상태 확인 중 오류:', error);
+                });
+        }
+
+        function updateFollowButton(isFollowing) {
+            const icon = document.getElementById('followIcon');
+            const text = document.getElementById('followText');
+            const button = document.querySelector('.follow_button');
+            
+            if (isFollowing) {
+                icon.className = 'bi bi-person-dash';
+                text.textContent = '언팔로우';
+                button.classList.add('following');
+            } else {
+                icon.className = 'bi bi-person-plus';
+                text.textContent = '팔로우';
+                button.classList.remove('following');
+            }
+        }
+
+        function toggleFollow(button) {
+            const userId = button.getAttribute('data-user-id');
+            const currentIcon = document.getElementById('followIcon');
+            const isFollowing = currentIcon.classList.contains('bi-person-dash');
+            const sessionUserId = /*[[${session.userId}]]*/ '';
+
+            console.log('User ID:', userId);              // 디버깅용
+            console.log('Session User ID:', sessionUserId); // 디버깅용
+            console.log('Is Following:', isFollowing);      // 디버깅용
+
+            const url = isFollowing ? '/api/unfollow' : '/api/follow';
+            const formData = new FormData();
+            formData.append('followingId', userId);
+            formData.append('followerId', sessionUserId);
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('Response status:', response.status); // 디버깅용
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text || 'Network response was not ok');
+                    });
+                }
+                return response.text();
+            })
+            .then(result => {
+                console.log('Success:', result);
+                updateFollowButton(!isFollowing);
+                
+                // 팔로워 수 업데이트 (두 번째 stat이 팔로워 수)
+                const followerCountElement = document.querySelector('.stat:nth-child(2) .stat_number');
+                if (followerCountElement) {
+                    let count = parseInt(followerCountElement.textContent);
+                    followerCountElement.textContent = isFollowing ? count - 1 : count + 1;
+                }
+            })
+            .catch(error => {
+                console.error('Error details:', error); // 상세 에러 로그
+                alert('팔로우/언팔로우 처리 중 오류가 발생했습니다: ' + error.message);
+            });
         }
     </script>
 </body>

@@ -72,4 +72,10 @@
 	    WHERE feed_id = #{feedId} AND user_id = #{userId}
 	</select>
 
+    <!-- 피드의 사용자 아이디 가져오기 -->
+    <select id="getUserByFeedId" resultType="String">
+        SELECT user_id
+        FROM Feed
+        WHERE feed_id = #{feedId}
+    </select>
 </mapper>

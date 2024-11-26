@@ -21,7 +21,7 @@
     <!-- 닉네임 업데이트 -->
     <update id="updateNickname">
         UPDATE MEMBER 
-        SET USER_NICKNAME = #{nickname}
+        SET USER_NICKNAME = #{userNickname}
         WHERE USER_ID = #{userId}
     </update>
     

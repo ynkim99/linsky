@@ -17,6 +17,6 @@ public interface FeedRepository {
     List<Map<String, String>> getFeedLikes(@Param("feedId") int feedId);
 	List<Feed> getFeedsWithDetails();
 	public boolean isUserLikedFeed(@Param("feedId") int feedId, @Param("userId") String userId);
-
+	public String getUserByFeedId(@Param("feedId") int feedId);
 	
 }

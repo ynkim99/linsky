@@ -29,7 +29,7 @@
                 <div class="profile-section">
                     <!-- 프로필 사진 -->
                     <div class="profile-image-wrapper">
-                        <img th:src="${member.userImg != null ? '/upload/' + member.userImg : '/images/profile/default-profile.png'}" 
+                        <img th:src="${member.userImg != null ? '/uploads/' + member.userImg : '/images/profile/default-profile.png'}" 
                              id="profileImage" alt="프로필 이미지">
                     </div>
                     <div class="file-input">
@@ -72,7 +72,7 @@
 <div id="nicknameModal" class="modal">
     <div class="modal-content">
         <h2>닉네임 변경</h2>
-        <input type="text" id="newNickname" placeholder="${member.nickName}">
+        <input type="text" id="newNickname" th:placeholder="${member.userNickname}">
         <button onclick="saveNickname()">저장</button>
         <button onclick="closeModal('nicknameModal')">취소</button>
     </div>

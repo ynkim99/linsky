@@ -352,7 +352,7 @@ section.right {
     margin-top: 10px;
 }
 
-/* 프로필 ���미지 기본 스타일 */
+/* 프로필 이미지 기본 스타일 */
 .following .profile-img {
     margin-right: 10px; /* 텍스트와의 간격 */
 }
@@ -388,4 +388,94 @@ section.right {
 .logout a{
     text-decoration-line: none;
     cursor: pointer;
+}
+
+/* 팝업 스타일 */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+}
+
+.popup-content {
+    position: relative;
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    width: 400px;
+    max-height: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.popup-header h3 {
+    font-family: 'goorm-sans-bold';
+    margin: 0;
+}
+
+.close-popup {
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.likes-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* 좋아요 목록 아이템 스타일 */
+.likeItem {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.likeItem:last-child {
+    border-bottom: none;
+}
+
+.likeItem .profileImage {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.likeItem .userInfo {
+    flex: 1;
+    font-family: 'goorm-sans-bold';
+}
+
+.likeItem .followButton {
+    padding: 8px 16px;
+    background-color: #0095f6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'goorm-sans-bold';
+}
+
+/* 좋아요 텍스트 호버 효과 */
+.likes {
+    cursor: pointer;
+}
+
+.likes:hover {
+    text-decoration: underline;
 }

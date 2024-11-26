@@ -11,7 +11,7 @@ import java.util.List;
 public interface FeedLikeMapper {
 
     @Select("""
-        SELECT m.USER_ID, m.USER_IMG
+        SELECT m.USER_ID, m.USER_IMG, m.USER_NICKNAME
         FROM FEED_LIKE fl
         JOIN MEMBER m ON fl.USER_ID = m.USER_ID
         WHERE fl.FEED_ID = #{feedId}

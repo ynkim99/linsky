@@ -14,4 +14,11 @@ public interface FollowRepository {
     
     int getFollowerCount(String userId);
     int getFollowingCount(String userId);
+
+    boolean checkFollowStatus(String followerId, String followingId);
+
+    void follow(@Param("followingId") String followingId, 
+                @Param("followerId") String followerId);
+    void unfollow(@Param("followingId") String followingId, 
+                  @Param("followerId") String followerId);
 }

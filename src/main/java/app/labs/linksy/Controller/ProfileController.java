@@ -26,7 +26,7 @@ public class ProfileController {
     private String uploadDir;
 
     @PostMapping("/save-nickname")
-    public ResponseEntity<String> saveNickname(@RequestParam("nickname") String newNickname,
+    public ResponseEntity<String> saveNickname(@RequestParam("userNickname") String newNickname,
                                                 HttpSession session) {
 
         if (newNickname == null || newNickname.trim().isEmpty()) {

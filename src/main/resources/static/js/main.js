@@ -131,3 +131,108 @@ function addComment(buttonElement) {
         console.error('댓글 추가에 실패했습니다:', error);
     });
 }
+
+// 팔로우 상태 확인 함수 추가
+async function checkFollowStatus(userId, feedId) {
+    try {
+        const response = await fetch(`/api/follow/check/${feedId}/${userId}`);
+        return await response.json();
+    } catch (error) {
+        console.error('팔로우 상태 확인 실패:', error);
+        return false;
+    }
+}
+
+// 좋아요 팝업 표시 함수 수정
+async function showLikesPopup(element) {
+    const feedId = element.getAttribute('data-feed-id');
+    const popup = document.getElementById('likesPopup');
+    const likesList = popup.querySelector('.likes-list');
+    
+    // 팝업 표시
+    popup.style.display = 'block';
+    
+    try {
+        const response = await fetch(`/api/feed/likes?feedId=${feedId}`);
+        const data = await response.json();
+        
+        likesList.innerHTML = ''; // 기존 목록 초기화
+        
+        if (data.length === 0) {
+            likesList.innerHTML = '<p style="text-align: center; color: #888;">No likes found for this feed.</p>';
+            return;
+        }
+
+        // 모든 사용자의 팔로우 상태를 한번에 확인
+        const followStatuses = await Promise.all(
+            data.map(user => checkFollowStatus(user.userId, feedId))
+        );
+        
+        // 팔로우 상태와 함께 UI 렌더링
+        data.forEach((user, index) => {
+            const likeItem = document.createElement('div');
+            likeItem.className = 'likeItem';
+            
+            const isFollowing = followStatuses[index];
+            
+            likeItem.innerHTML = `
+                <img class="profileImage" src="/images/profile/${user.userImg}" alt="프로필 사진">
+                <div class="userInfo">${user.userNickname}</div>
+                
+            `;
+            
+            likesList.appendChild(likeItem);
+        });
+    } catch (error) {
+        console.error('좋아요 목록을 가져오는데 실패했습니다:', error);
+        likesList.innerHTML = '<p class="error-message">좋아요 목록을 불러올 수 없습니다.</p>';
+    }
+}
+
+// 팔로우/언팔로우 토글 함수 추가
+async function toggleFollow(button, userId) {
+    try {
+        const isFollowing = button.textContent.trim() === 'Unfollow';
+        const url = isFollowing ? '/api/unfollow' : '/api/follow';
+        
+        // 현재 로그인한 사용자의 ID도 필요합니다
+        const followerId = button.closest('.likeItem').getAttribute('data-current-user-id');
+        
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `followingId=${userId}&followerId=${followerId}`
+        });
+        
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        const data = await response.json();
+        console.log('Toggle follow response:', data); // 디버깅용 로그
+        
+        // 버튼 상태 업데이트
+        button.textContent = isFollowing ? 'Follow' : 'Unfollow';
+        button.style.backgroundColor = isFollowing ? '#007bff' : '#dc3545';
+        
+    } catch (error) {
+        console.error('팔로우/언팔로우 토글 실패:', error);
+        alert('팔로우/언팔로우 처리 중 오류가 발생했습니다.');
+    }
+}
+
+// 팝업 닫기
+function closeLikesPopup() {
+    const popup = document.getElementById('likesPopup');
+    popup.style.display = 'none';
+}
+
+// 팝업 외부 클릭시 닫기
+window.onclick = function(event) {
+    const popup = document.getElementById('likesPopup');
+    if (event.target == popup) {
+        popup.style.display = 'none';
+    }
+}

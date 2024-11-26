@@ -37,7 +37,9 @@
 							th:data-feed-id="${feed.feedId}" 
 							th:data-user-id="${member.userId}"></i>
 						</div>
-						<div class="likes" th:text="'좋아요 ' + ${feed.likeAmount} + '개'">
+						<div class="likes" th:text="'좋아요 ' + ${feed.likeAmount} + '개'" 
+							 onclick="showLikesPopup(this)" 
+							 th:data-feed-id="${feed.feedId}">
 						</div>
 					</div>
 					<div class="feed-caption">
