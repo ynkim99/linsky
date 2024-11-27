@@ -22,6 +22,11 @@
                             <span class="author-name" th:text="${feed.member.userName}"></span>
                             <span class="post-time" data-feed-time="${feed.feedTime}"></span>
                         </div>
+                        <!-- 작성자인 경우에만 수정/삭제 버튼 표시 -->
+                        <div class="feed-actions" th:if="${feed.userId == session.userId}">
+                            <a class="edit-btn" th:href="@{/feed/edit/{feedId}(feedId=${feed.feedId})}">수정</a>
+                            <a class="delete-btn" th:href="@{/feed/delete/{feedId}(feedId=${feed.feedId})}">삭제</a>
+                        </div>
                     </div>
                     
                     <!-- 피드 내용 -->

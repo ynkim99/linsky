@@ -7,10 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import jakarta.servlet.http.HttpSession;
 
 import app.labs.linksy.Model.Feed;
 import app.labs.linksy.Model.Member;
-import app.labs.linksy.Model.Comment;
 import app.labs.linksy.Service.SearchService;
 import app.labs.linksy.Service.CommentService;
 
@@ -86,12 +86,28 @@ public class SearchController {
         return "searchPage/search";
     }
 	
-	@GetMapping("/search/feedPopup/{feedId}")
-	public String getFeedPopup(@PathVariable("feedId") int feedId, Model model) {
+	@GetMapping("/search/feed/{feedId}")
+	public String showFeedPopup(@PathVariable("feedId") int feedId, Model model, HttpSession session) {
 		Feed feed = searchserv.getFeedById(feedId);
-		List<Comment> comments = commentService.getCommentsByFeedId(feedId);
+		if (feed == null) {
+			return "error";
+		}
+		
+		String userId = (String) session.getAttribute("userId");
+        
+		 // Feed 객체의 모든 정보 출력
+         System.out.println("===== Debug Info =====");
+         System.out.println("Session attributes: " + session.getAttributeNames());
+         System.out.println("Current User ID from session: " + userId);
+         System.out.println("Feed User ID: " + feed.getUserId());
+         
+         System.out.println("====================");
+
+		// userId를 명시적으로 모델에 추가
+		model.addAttribute("userId", userId);
 		model.addAttribute("feed", feed);
-		model.addAttribute("comments", comments);
+		model.addAttribute("comments", commentService.getCommentsByFeedId(feedId));
+		
 		return "searchPage/searchFeedPopup";
 	}
 	

@@ -89,11 +89,14 @@
       font-size: 1em;
       outline: none;
     }
+    a {
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
 <div id="feedFormContainer">
-  <button id="closeButton" onclick="closeFeed()">&times;</button>
+  <a id="closeButton" th:href="@{/linksy}">&times;</a>
   <div id="header">
     <h1 style="margin-right: auto;">게시물 수정</h1>
     <button id="createEditButton" onclick="editFeed()">수정</button>

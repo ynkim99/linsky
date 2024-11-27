@@ -158,5 +158,22 @@ public class FeedCreateService {
         feedCreateMapper.updateFeed(feed);
     }
 
+    @Transactional
+    public void deleteFeedRelatedData(int feedId) {
+        // 1. 피드의 댓글 삭제
+        feedCreateMapper.deleteCommentsByFeedId(feedId);
+        
+        // 2. 피드의 이미지 삭제
+        feedCreateMapper.deleteFeedImagesByFeedId(feedId);
+        
+        // 3. 피드의 해시태그 관계 삭제
+        feedCreateMapper.deleteFeedHashtagsByFeedId(feedId);
+        
+        // 4. 피드 좋아요 삭제
+        feedCreateMapper.deleteFeedLikesByFeedId(feedId);
+        
+        // 5. 마지막으로 피드 삭제
+        feedCreateMapper.deleteFeed(feedId);
+    }
 
 }

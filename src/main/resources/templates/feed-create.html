@@ -108,6 +108,9 @@
       border-radius: 5px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     }
+    a {
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
@@ -115,7 +118,7 @@
   <!-- 게시물 작성 폼 -->
   <div id="formContent">
     <div id="header">
-      <button id="closeButton" onclick="closeFeed()">&times;</button>
+      <a id="closeButton" th:href="@{/linksy}">&times;</a>
       <h1>새 게시물 만들기</h1>
       <button id="createEditButton" onclick="createFeed()">생성</button>
     </div>
@@ -133,7 +136,7 @@
 
   <!-- 성공 메시지 -->
   <div id="successMessage">
-    <button id="closeButtonSuccess" onclick="closeFeed()">&times;</button>
+    <button id="closeButtonSuccess" th:onclick="@{/linksy}">&times;</button>
     <div class="checkIcon">&#x2714;</div>
     <h1>게시물이 공유되었습니다.</h1>
   </div>

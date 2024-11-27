@@ -119,44 +119,67 @@ public class FeedCreateController {
     // 게시물 수정 처리
     @PutMapping("/feed/edit/{feedId}")
     @ResponseBody
-    public String updateFeedById(@PathVariable("feedId") int feedId,
-                                 @RequestBody Map<String, String> payload) {
+    public ResponseEntity<?> updateFeedById(@PathVariable("feedId") int feedId,
+                               @RequestBody Map<String, String> payload,
+                               HttpSession session) {
+        String currentUserId = (String) session.getAttribute("userId");
+        Feed feed = feedCreateService.getFeedById(feedId);
+        
+        // 권한 확인
+        if (feed == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                               .body(Map.of("error", "Feed not found"));
+        }
+        
+        if (!feed.getUserId().equals(currentUserId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                               .body(Map.of("error", "Not authorized"));
+        }
+        
         String feedContent = payload.get("feedContent");
-        logger.info("Received request to update feed with ID: " + feedId);
         try {
-            // 피드 업데이트 및 데이터 저장
-            Feed feed = new Feed();
-            feed.setFeedId(feedId);
             feed.setFeedContent(feedContent);
-
-            feedCreateService.updateFeedContent(feed); // 피드 내용만 업데이트
-            logger.info("Feed successfully updated with ID: " + feedId);
-
-            return "redirect:/modifyFeedSuccess";
+            feedCreateService.updateFeedContent(feed);
+            return ResponseEntity.ok(Map.of("message", "Feed updated successfully"));
         } catch (Exception e) {
-            logger.severe("Unexpected error occurred: " + e.getMessage());
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error updating feed");
+            logger.severe("Error updating feed: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                               .body(Map.of("error", "Error updating feed"));
         }
     }
 
     // 게시물 삭제 처리
     @DeleteMapping("/feed/delete/{feedId}")
-    public String deleteFeed(@PathVariable("feedId") int feedId) {
-        logger.info("Received request to delete feed with ID: " + feedId);
+    @ResponseBody
+    public ResponseEntity<?> deleteFeed(@PathVariable("feedId") int feedId,
+                                  HttpSession session) {
+        String currentUserId = (String) session.getAttribute("userId");
+        Feed feed = feedCreateService.getFeedById(feedId);
+        
+        // 권한 확인
+        if (feed == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                               .body(Map.of("error", "Feed not found"));
+        }
+        
+        if (!feed.getUserId().equals(currentUserId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                               .body(Map.of("error", "Not authorized"));
+        }
+        
         try {
-            feedCreateService.deleteFeed(feedId);
-            logger.info("Feed successfully deleted with ID: " + feedId);
-            return "redirect:/deleteFeedSuccess";
+            // 관련된 데이터들을 순차적으로 삭제
+            feedCreateService.deleteFeedRelatedData(feedId);  // 새로운 메소드
+            return ResponseEntity.ok(Map.of("message", "Feed deleted successfully"));
         } catch (Exception e) {
-            logger.severe("Error occurred while deleting feed: " + e.getMessage());
-            e.printStackTrace();
-            return "redirect:/error";
+            logger.severe("Error deleting feed: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                               .body(Map.of("error", "Error deleting feed"));
         }
     }
 
     // 게시물 삭제 성공 페이지 매핑
-    @GetMapping("/deleteFeedSuccess")
+    @GetMapping("/feed/deletesuccess")
     public String deleteFeedSuccessPage() {
         return "feed-delete-success"; // feed-delete-success.html 파일과 매핑
     }
@@ -278,4 +301,8 @@ public class FeedCreateController {
         return "likeslist"; // feed-create.html 파일과 매핑
     }
 
+    @GetMapping("/feed/delete/{feedId}")
+    public String deleteFeedPage(@PathVariable("feedId") int feedId) {
+        return "feed-modifyordelete"; 
+    }
 }

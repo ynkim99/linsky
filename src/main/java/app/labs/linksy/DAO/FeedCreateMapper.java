@@ -74,6 +74,17 @@ public interface FeedCreateMapper {
     @Select("SELECT * FROM FEED WHERE FEED_ID = #{feedId}")
     Feed getFeedById(@Param("feedId") int feedId);
 
+    @Delete("DELETE FROM COMMENTS WHERE FEED_ID = #{feedId}")
+    void deleteCommentsByFeedId(int feedId);
+
+    @Delete("DELETE FROM FEED_IMAGE WHERE FEED_ID = #{feedId}")
+    void deleteFeedImagesByFeedId(int feedId);
+    
+    @Delete("DELETE FROM FEED_HASHTAG WHERE FEED_ID = #{feedId}")
+    void deleteFeedHashtagsByFeedId(int feedId);
+
+    @Delete("DELETE FROM FEED_LIKE WHERE FEED_ID = #{feedId}")
+    void deleteFeedLikesByFeedId(int feedId);
 
 
 }
