@@ -2,9 +2,11 @@ package app.labs.linksy.Controller;
 
 import java.util.List;
 
+import app.labs.linksy.Service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpSession;
@@ -13,6 +15,8 @@ import app.labs.linksy.Model.Member;
 import app.labs.linksy.Service.MemberService;
 import app.labs.linksy.Service.SearchService;
 import app.labs.linksy.Service.FollowService;
+import app.labs.linksy.Service.CommentService;
+import app.labs.linksy.Model.Comment;
 
 @Controller 
 public class profilePageController {
@@ -23,6 +27,8 @@ public class profilePageController {
     private SearchService searchService;
     @Autowired
     private FollowService followService;
+    @Autowired
+    private CommentService commentService;
 
     // 사용중인 사용자의 프로필 페이지
     @GetMapping("/profile")
@@ -56,8 +62,8 @@ public class profilePageController {
         for (Feed feed : feeds) {
             int likeCount = searchService.getLikeCount(feed.getFeedId());
             int commentCount = searchService.getCommentCount(feed.getFeedId());
-            model.addAttribute("likeCount", likeCount);
-            model.addAttribute("commentCount", commentCount);
+            feed.setLikeAmount(likeCount);
+            feed.setCommentCount(commentCount);
         }
         
         boolean isOwnProfile = currentUserId != null && currentUserId.equals(targetUserId);
@@ -90,8 +96,11 @@ public class profilePageController {
     // 피드 팝업 출력
     @GetMapping("/profile/feed/popup/{feedId}")
     public String feedPopup(Model model, @PathVariable("feedId") int feedId) {
-        Feed feed = searchService.getFeedById((feedId));
+        List<Comment> comments = commentService.getCommentsByFeedId(feedId);
+
+        Feed feed = searchService.getFeedById(feedId);
 		model.addAttribute("feed", feed);
+        model.addAttribute("comments", comments);
         return "searchPage/searchFeedPopup";
     }
 }
