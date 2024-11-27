@@ -112,7 +112,7 @@ body {
 /* 오른쪽 패널 */
 .right-panel {
     width: 20%;
-    background-color: #f4f4f4;
+    background-color: #f9f9f9;
     color: #333;
     display: flex;
     justify-content: center;

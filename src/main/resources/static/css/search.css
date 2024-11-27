@@ -320,3 +320,6 @@ html, body {
     position: absolute !important;
     left: -9999px !important;
 }
+.image-container {
+ cursor: pointer;
+}

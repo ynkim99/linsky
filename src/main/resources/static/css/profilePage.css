@@ -68,6 +68,7 @@
 
 .image-container {
     position: relative;
+    cursor: pointer;
     aspect-ratio: 1;
     overflow: hidden;
 }
